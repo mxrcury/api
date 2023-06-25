@@ -1,0 +1,22 @@
+1. Add to git for committing
+2. Containerize with Docker
+3. Add prisma, schema, models and move to Docker
+4. Add auth based on our DB, exceptions catching
+5. Add decorators and guards for restrictions and auth checking
+6. Add redis for caching
+7. Implement seeding, migrations
+8. Add async local storage
+9. Implement database backup
+10. Add cron
+11. Add mail service
+12. Implement working with files and connect to some cloud storage for this action
+13. Implement photos compression to decrease memory what they took
+14. Add using interceptors, pipes, custom decorators, middlewares
+15. Add passport auth, like via some social networks (google, instagram and etc)
+16. Add using web sockets for in real time logic, notifications
+
+Features for future upgrade:
+
+1. Implement logger that sends every action on API to private telegram bot
+2. Implement limiter of requests to API and banning
+3. Create an client application for this API using Svelte
