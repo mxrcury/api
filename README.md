@@ -38,3 +38,30 @@ $ pnpm install
 # development
 $ pnpm run start
 ```
+
+Todo:
+- [] Add to git for committing
+- [] Containerize with Docker
+- [] Add prisma, schema, models and move to Docker
+- [] Add auth based on our DB, exceptions catching
+- [] Add swagger for documentation
+- [] Add decorators and guards for restrictions and auth checking
+- [] Add redis for caching
+- [] Implement seeding, migrations
+- [] Add async local storage
+- [] Implement database backup
+- [] Add cron
+- [] Add mail service
+- [] Implement working with files and connect to some cloud storage for this action
+- [] Implement photos compression to decrease memory what they took
+- [] Add using interceptors, pipes, custom decorators, middlewares
+- [] Add passport auth, like via some social networks (google, instagram and etc)
+- [] Add using web sockets for in real time logic, notifications
+- [] Add CI/CD
+- [] Write and describe documentation for running an application in README
+
+Features for future upgrade:
+- Implement logger that sends every action on API to private telegram bot
+- Implement limiter of requests to API and banning
+- Create an client application for this API using Svelte
+
