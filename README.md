@@ -39,7 +39,7 @@ $ pnpm install
 $ pnpm run start
 ```
 
-Todo:
+#### Todo:
 - [X] Add to git for committing
 - [ ] Containerize with Docker
 - [ ] Add prisma, schema, models and move to Docker
@@ -60,7 +60,7 @@ Todo:
 - [ ] Add CI/CD
 - [ ] Write and describe documentation for running an application in README
 
-Features for future upgrade:
+#### Features for future upgrade:
 - Implement logger that sends every action on API to private telegram bot
 - Implement limiter of requests to API and banning
 - Create an client application for this API using Svelte
