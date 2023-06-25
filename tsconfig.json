@@ -21,7 +21,8 @@
     "paths": {
       "@configs":["src/configs/index"],
       "@core":["src/core/index"],
-      "@core/*":["src/core/*"]
+      "@core/*":["src/core/*"],
+      "@modules/*":["src/modules/*"]
     }
   }
 }

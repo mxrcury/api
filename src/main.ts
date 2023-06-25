@@ -6,4 +6,5 @@ async function main() {
   const app = await NestFactory.create(AppModule);
   await app.listen(env.PORT);
 }
+
 main();
