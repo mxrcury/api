@@ -37,39 +37,33 @@ $ pnpm install
 ```bash
 # development
 $ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
 ```
 
-## Test
+#### Todo:
 
-```bash
-# unit tests
-$ pnpm run test
+- [x] Add to git for committing
+- [ ] Integrate nx to repo
+- [ ] Containerize with Docker
+- [ ] Add prisma, schema, models and move to Docker
+- [ ] Add auth based on our DB, exceptions catching
+- [ ] Add swagger for documentation
+- [ ] Add decorators and guards for restrictions and auth checking
+- [ ] Add redis for caching
+- [ ] Implement seeding, migrations
+- [ ] Add async local storage
+- [ ] Implement database backup
+- [ ] Add cron
+- [ ] Add mail service
+- [ ] Implement working with files and connect to some cloud storage for this action
+- [ ] Implement photos compression to decrease memory what they took
+- [ ] Add using interceptors, pipes, custom decorators, middlewares
+- [ ] Add passport auth, like via some social networks (google, instagram and etc)
+- [ ] Add using web sockets for in real time logic, notifications
+- [ ] Add CI/CD
+- [ ] Write and describe documentation for running an application in README
 
-# e2e tests
-$ pnpm run test:e2e
+#### Features for future upgrade:
 
-# test coverage
-$ pnpm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
-
-> > > > > > > e485a0d (feat: initialize project and create config for env)
+- Implement logger that sends every action on API to private telegram bot
+- Implement limiter of requests to API and banning
+- Create an client application for this API using Svelte
