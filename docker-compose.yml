@@ -1,0 +1,19 @@
+version: "3.8"
+
+networks:
+  mavy:
+    driver: bridge
+
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      PORT: ${PORT}
+    networks:
+      - mavy
+    restart: always

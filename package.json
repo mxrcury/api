@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start:api": "nx serve api"
+    "start:api": "nx serve api --host=0.0.0.0",
+    "start:api:docker": "nx build api && docker-compose up --build",
+    "build:api": "nx build api"
   },
   "private": true,
   "dependencies": {

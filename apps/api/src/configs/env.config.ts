@@ -5,7 +5,7 @@ import { z } from "zod";
 
 const logger = new Logger();
 
-const { parsed } = config({ path: '.env' });
+const { parsed } = config({ path: `.env` }); // change it depends on app it is, and move to global utils
 
 const envSchema = z.object({
   // Server port
