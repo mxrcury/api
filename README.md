@@ -40,9 +40,10 @@ $ pnpm run start
 ```
 
 #### Todo:
-- [X] Add to git for committing
-- [ ] Integrate nx to repo
-- [ ] Containerize with Docker
+
+- [x] Add to git for committing
+- [x] Integrate nx to repo
+- [x] Containerize with Docker
 - [ ] Add prisma, schema, models and move to Docker
 - [ ] Add auth based on our DB, exceptions catching
 - [ ] Add swagger for documentation
@@ -62,7 +63,7 @@ $ pnpm run start
 - [ ] Write and describe documentation for running an application in README
 
 #### Features for future upgrade:
+
 - Implement logger that sends every action on API to private telegram bot
 - Implement limiter of requests to API and banning
 - Create an client application for this API using Svelte
-
