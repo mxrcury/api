@@ -17,3 +17,20 @@ services:
     networks:
       - mavy
     restart: always
+  database:
+    container_name: database
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_HOST=${DB_HOST}
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - mavy
+volumes:
+  pgdata:
