@@ -9,7 +9,7 @@ services:
     container_name: api
     build:
       context: .
-      dockerfile: Dockerfile.api
+      dockerfile: api.Dockerfile
     ports:
       - ${PORT}:${PORT}
     environment:
