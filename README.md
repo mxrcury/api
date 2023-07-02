@@ -44,7 +44,7 @@ $ pnpm run start
 - [x] Add to git for committing
 - [x] Integrate nx to repo
 - [x] Containerize with Docker
-- [ ] Add prisma, schema, models and move to Docker
+- [x] Add prisma, schema, models and move to Docker
 - [ ] Add auth based on our DB, exceptions catching
 - [ ] Add swagger for documentation
 - [ ] Add decorators and guards for restrictions and auth checking
