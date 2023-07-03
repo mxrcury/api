@@ -6,7 +6,8 @@
     "start:api": "pnpm db && nx serve api --host=0.0.0.0",
     "start:api:docker": "nx build api && docker-compose up --build",
     "build:api": "nx build api",
-    "db": "docker-compose up database -d"
+    "db": "docker-compose up database -d",
+    "format": "nx format:write"
   },
   "private": true,
   "dependencies": {
