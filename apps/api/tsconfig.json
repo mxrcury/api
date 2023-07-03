@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "paths": {
+      "@configs/*": ["apps/api/src/configs/*"],
+      "@configs": ["apps/api/src/configs/index"],
+      "@modules/*": ["apps/api/src/modules/*"],
+      "@modules": ["apps/api/src/modules/index"],
+      "@core/*": ["apps/api/src/core/*"],
+      "@core": ["apps/api/src/core/index"],
+      "@libs/*": ["libs/*/index"]
+    }
+  }
+}
