@@ -14,10 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "esModuleInterop": true
-    // "paths": {
-    //   "@libs/*": ["libs/*"]
-    // }
+    "esModuleInterop": true,
+    "paths": {
+      "token": ["libs/token/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

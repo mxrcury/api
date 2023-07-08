@@ -45,7 +45,7 @@ $ pnpm run start
 - [x] Integrate nx to repo
 - [x] Containerize with Docker
 - [x] Add prisma, schema, models and move to Docker
-- [ ] Add auth based on our DB, exceptions catching
+- [x] Add auth based on our DB, exceptions catching
 - [ ] Add swagger for documentation
 - [ ] Add decorators and guards for restrictions and auth checking
 - [ ] Add redis for caching
