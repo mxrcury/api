@@ -19,7 +19,8 @@
       "@modules": ["apps/api/src/modules/index"],
       "@core/*": ["apps/api/src/core/*"],
       "@core": ["apps/api/src/core/index"],
-      "@libs/*": ["libs/*/index"]
+      "@libs/*": ["libs/*/index"],
+      "@utils": ["utils/index"]
     }
   }
 }

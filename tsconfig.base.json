@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "paths": {
-      "token": ["libs/token/src/index.ts"]
+      "@utils/*":["utils/index"]
     }
   },
   "exclude": ["node_modules", "tmp"]
