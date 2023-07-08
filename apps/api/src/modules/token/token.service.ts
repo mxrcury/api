@@ -18,8 +18,7 @@ export class TokenService {
       })
 
       return {
-        accessToken,
-        refreshToken
+        accessToken
       }
     } catch (error) {
       throw new BadRequestException('Generating tokens was failed')

@@ -1,7 +1,10 @@
-import { env } from '@configs/env.config'
-import { AppModule } from '@core'
+import cookieParser from 'cookie-parser'
+
 import { Logger, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
+
+import { env } from '@configs'
+import { AppModule } from '@core'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -12,6 +15,7 @@ async function bootstrap() {
 
   const port = env.PORT
 
+  app.use(cookieParser())
   app.useGlobalPipes(new ValidationPipe())
 
   await app.listen(port)
