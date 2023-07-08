@@ -1,29 +1,67 @@
+import { PrismaService } from '@libs/prisma'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
+import { IBasicTokenPayload } from './token.interface'
 
 @Injectable()
 export class TokenService {
-  generateTokens<P extends object>(payload: P) {
+  constructor(private readonly prismaService: PrismaService) {}
+  // TODO: move tokens saving to redis when it will be connected
+
+  async generateTokens<P extends IBasicTokenPayload>(payload: P) {
     try {
+      const accessToken = await this.generateAccessToken<P>(payload)
+      const refreshToken = await this.generateRefreshToken<P>(payload)
+
+      await this.prismaService.tokens.create({
+        data: { accessToken, refreshToken, userId: payload.id }
+      })
+
       return {
-        accessToken: this.generateAccessToken<P>(payload),
-        refreshToken: this.generateRefreshToken<P>(payload)
+        accessToken,
+        refreshToken
       }
     } catch (error) {
       throw new BadRequestException('Generating tokens was failed')
     }
   }
 
-  generateAccessToken<P extends object>(payload: P) {
-    return jwt.sign(payload, 'process.env.ACCESS_SECRET_KEY', {
+  async generateAccessToken<P extends IBasicTokenPayload>(payload: P) {
+    const token = jwt.sign(payload, 'process.env.ACCESS_SECRET_KEY', {
       expiresIn: '1d' // process.env.ACCESS_TOKEN_EXPIRES_IN
     })
+
+    const isTokenExisting = await this.prismaService.tokens.findFirst({
+      where: { userId: payload.id }
+    })
+
+    if (isTokenExisting) {
+      await this.prismaService.tokens.updateMany({
+        where: { userId: payload.id },
+        data: { accessToken: token }
+      })
+    }
+
+    return token
   }
 
-  generateRefreshToken<P extends object>(payload: P) {
-    return jwt.sign(payload, 'process.env.REFRESH_TOKEN', {
+  async generateRefreshToken<P extends IBasicTokenPayload>(payload: P) {
+    const token = jwt.sign(payload, 'process.env.REFRESH_SECRET_KEY', {
       expiresIn: '30d' // process.env.REFRESH_TOKEN_EXPIRES_IN
     })
+
+    const isTokenExisting = await this.prismaService.tokens.findFirst({
+      where: { userId: payload.id }
+    })
+
+    if (isTokenExisting) {
+      await this.prismaService.tokens.updateMany({
+        where: { userId: payload.id },
+        data: { refreshToken: token }
+      })
+    }
+
+    return token
   }
 
   validateAccessToken(token: string) {

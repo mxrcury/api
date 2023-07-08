@@ -13,4 +13,16 @@ model User {
   email    String
   name     String
   password String
+
+  tokens Tokens[]
+}
+
+model Tokens {
+  id String @id @default(cuid())
+
+  accessToken  String @map("access_token")
+  refreshToken String @map("refresh_token")
+
+  user   User   @relation(references: [id], fields: [userId])
+  userId String @map("user_id")
 }
