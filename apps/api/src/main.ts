@@ -2,10 +2,10 @@ import cookieParser from 'cookie-parser'
 
 import { Logger, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 import { env } from '@configs'
-import { AppModule } from '@core'
+import { AppModule } from '@core/app.module'
+import { SwaggerService } from '@core/swagger'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -16,16 +16,7 @@ async function bootstrap() {
 
   const port = env.PORT
 
-  const swaggerConfig = new DocumentBuilder()
-    .addBearerAuth()
-    .setTitle('Mavy API')
-    .setDescription('API with all modern backend features')
-    .setVersion('1.0')
-    .build()
-
-  const document = SwaggerModule.createDocument(app, swaggerConfig)
-
-  SwaggerModule.setup('api', app, document)
+  SwaggerService.init(app)
 
   app.use(cookieParser())
   app.useGlobalPipes(new ValidationPipe())

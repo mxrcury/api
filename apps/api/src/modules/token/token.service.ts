@@ -1,3 +1,4 @@
+import { env } from '@configs'
 import { PrismaService } from '@libs/prisma'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import * as jwt from 'jsonwebtoken'
@@ -26,8 +27,8 @@ export class TokenService {
   }
 
   async generateAccessToken<P extends IBasicTokenPayload>(payload: P) {
-    const token = jwt.sign(payload, 'process.env.ACCESS_SECRET_KEY', {
-      expiresIn: '1d' // process.env.ACCESS_TOKEN_EXPIRES_IN
+    const token = jwt.sign(payload, env.ACCESS_SECRET_KEY, {
+      expiresIn: env.ACCESS_TOKEN_EXPIRES_IN
     })
 
     const isTokenExisting = await this.prismaService.tokens.findFirst({
@@ -45,8 +46,8 @@ export class TokenService {
   }
 
   async generateRefreshToken<P extends IBasicTokenPayload>(payload: P) {
-    const token = jwt.sign(payload, 'process.env.REFRESH_SECRET_KEY', {
-      expiresIn: '30d' // process.env.REFRESH_TOKEN_EXPIRES_IN
+    const token = jwt.sign(payload, env.REFRESH_SECRET_KEY, {
+      expiresIn: env.REFRESH_TOKEN_EXPIRES_IN
     })
 
     const isTokenExisting = await this.prismaService.tokens.findFirst({

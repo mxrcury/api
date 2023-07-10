@@ -40,7 +40,8 @@ export class AuthGuard implements CanActivate {
 
       if (!isValidRefreshToken) {
         await this.prismaService.tokens.delete({ where: { id: tokens.id } })
-        return false
+
+        throw new UnauthorizedException()
       }
 
       const user = await this.prismaService.user.findFirst({
