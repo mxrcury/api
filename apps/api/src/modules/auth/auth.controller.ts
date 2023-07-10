@@ -1,16 +1,14 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common'
+import { env } from '@configs'
+import { Body, Controller, Post, Res } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
 import { SignInDto } from './dto/sign-in.dto'
 import { SignUpDto } from './dto/sign-up.dto'
 
 @Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @Get('hello')
-  async gello() {
-    throw new Error('ds')
-  }
 
   @Post('sign-up')
   async signup(@Body() dto: SignUpDto) {
@@ -23,7 +21,7 @@ export class AuthController {
 
     const cookieOptions = {
       httpOnly: true,
-      domain: 'localhost', //env.CLIENT_DOMAIN
+      domain: env.CLIENT_DOMAIN,
       maxAge: 30 * 24 * 3600 * 1000, // 30days
       secure: true
     }
