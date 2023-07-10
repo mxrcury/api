@@ -46,7 +46,7 @@ $ pnpm run start
 - [x] Containerize with Docker
 - [x] Add prisma, schema, models and move to Docker
 - [x] Add auth based on our DB, exceptions catching
-- [ ] Add swagger for documentation
+- [x] Add swagger for documentation
 - [ ] Add decorators and guards for restrictions and auth checking, roles
 - [ ] Add redis for caching
 - [ ] Implement seeding, migrations
