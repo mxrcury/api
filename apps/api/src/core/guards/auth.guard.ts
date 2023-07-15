@@ -8,16 +8,25 @@ import {
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    private readonly reflector: Reflector
   ) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest()
+
+    const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
+      context.getClass(),
+      context.getHandler()
+    ])
+
+    if (isPublic) return true
 
     const token = request.cookies['token']
 
@@ -26,8 +35,6 @@ export class AuthGuard implements CanActivate {
     }
 
     const isValidToken = this.tokenService.validateAccessToken(token)
-
-    console.log(isValidToken, token)
 
     if (isValidToken && typeof isValidToken !== 'string') {
       const user = await this.prismaService.user.findFirst({
@@ -38,10 +45,10 @@ export class AuthGuard implements CanActivate {
         throw new NotFoundException('User not found')
       }
 
-      const { id, email } = user
+      const { id, roleName: role } = user
 
       // change logic after adding ALS
-      request.user = { id, email }
+      request.user = { id, role }
 
       return true
     }
@@ -69,11 +76,11 @@ export class AuthGuard implements CanActivate {
         throw new NotFoundException('User not found')
       }
 
-      const { id, email } = user
+      const { id, roleName: role } = user
 
       const accessToken = await this.tokenService.generateAccessToken({
         id,
-        email
+        role
       })
 
       const response = context.switchToHttp().getResponse()
@@ -81,7 +88,7 @@ export class AuthGuard implements CanActivate {
       response.cookie('token', accessToken, cookieOptions)
 
       // change logic after adding ALS
-      request.user = { id, email }
+      request.user = { id, role }
 
       return true
     }
