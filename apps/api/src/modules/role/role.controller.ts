@@ -1,7 +1,7 @@
 import { Auth } from '@core/decorators'
-import { User } from '@core/decorators/user.decorator'
-import { Controller, Get } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
+import { CreateRoleDto } from './dto/create-role.dto'
 import { RoleService } from './role.service'
 
 @Auth()
@@ -9,9 +9,18 @@ import { RoleService } from './role.service'
 @ApiTags('Roles')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
-
   @Get()
-  async get(@User() user: { id: string; email: string }) {
-    return user
+  getAll() {
+    return this.roleService.getAll()
+  }
+
+  @Post()
+  create(@Body() dto: CreateRoleDto) {
+    return this.roleService.create(dto)
+  }
+
+  @Delete(':name')
+  delete(@Param('name') name: string) {
+    return this.roleService.delete(name)
   }
 }

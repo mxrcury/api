@@ -19,13 +19,15 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest()
 
-    const token = request.cookies['accessToken']
+    const token = request.cookies['token']
 
     if (!token) {
       throw new UnauthorizedException(`You have not provide token in cookie`)
     }
 
     const isValidToken = this.tokenService.validateAccessToken(token)
+
+    console.log(isValidToken, token)
 
     if (isValidToken && typeof isValidToken !== 'string') {
       const user = await this.prismaService.user.findFirst({

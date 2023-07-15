@@ -65,11 +65,11 @@ export class TokenService {
   }
 
   validateAccessToken(token: string) {
-    return this.tokenValidationFactory(token, 'process.env.ACCESS_SECRET_KEY')
+    return this.tokenValidationFactory(token, env.ACCESS_SECRET_KEY)
   }
 
   validateRefreshToken(token: string) {
-    return this.tokenValidationFactory(token, 'process.env.REFRESH_SECRET_KEY')
+    return this.tokenValidationFactory(token, env.REFRESH_SECRET_KEY)
   }
 
   private tokenValidationFactory(token: string, secretKey: string) {
