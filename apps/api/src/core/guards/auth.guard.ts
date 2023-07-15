@@ -1,9 +1,11 @@
+import { cookieOptions } from '@configs'
 import { PrismaService } from '@libs/prisma'
 import { TokenService } from '@modules/token'
 import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  NotFoundException,
   UnauthorizedException
 } from '@nestjs/common'
 
@@ -25,7 +27,20 @@ export class AuthGuard implements CanActivate {
 
     const isValidToken = this.tokenService.validateAccessToken(token)
 
-    if (isValidToken) {
+    if (isValidToken && typeof isValidToken !== 'string') {
+      const user = await this.prismaService.user.findFirst({
+        where: { id: isValidToken.id }
+      })
+
+      if (!user) {
+        throw new NotFoundException('User not found')
+      }
+
+      const { id, email } = user
+
+      // change logic after adding ALS
+      request.user = { id, email }
+
       return true
     }
 
@@ -47,14 +62,24 @@ export class AuthGuard implements CanActivate {
       const user = await this.prismaService.user.findFirst({
         where: { id: tokens.userId }
       })
+
+      if (!user) {
+        throw new NotFoundException('User not found')
+      }
+
+      const { id, email } = user
+
       const accessToken = await this.tokenService.generateAccessToken({
-        id: user.id,
-        email: user.email
+        id,
+        email
       })
 
       const response = context.switchToHttp().getResponse()
 
-      response.cookie('accessToken', accessToken)
+      response.cookie('token', accessToken, cookieOptions)
+
+      // change logic after adding ALS
+      request.user = { id, email }
 
       return true
     }
