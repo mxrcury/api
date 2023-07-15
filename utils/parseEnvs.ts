@@ -12,9 +12,9 @@ export const parseEnvs = <S extends z.AnyZodObject>(schema: S, prefix = '') => {
 
   const parsedEnv = schema.safeParse(expand({ parsed }).parsed)
 
-  if (parsedEnv.success === false) {
+  if (parsedEnv?.success === false) {
     logger.error(
-      `Environmental variables cannot be parsed${prefix && ` in ${prefix}`}`
+      `Environmental variables cannot be parsed${prefix && ` for ${prefix}`}`
     )
     process.exit(1)
   }

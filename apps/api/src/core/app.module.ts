@@ -4,8 +4,10 @@ import { AuthModule } from '@modules/auth'
 import { RoleModule } from '@modules/role'
 import { TokenModule } from '@modules/token'
 
+import { CacheModule } from '@core/cache'
 import { ExceptionModule } from '@core/exceptions'
 import { SwaggerModule } from '@core/swagger'
+
 import { PrismaModule } from '@libs/prisma'
 
 @Module({
@@ -15,7 +17,8 @@ import { PrismaModule } from '@libs/prisma'
     TokenModule,
     ExceptionModule,
     SwaggerModule,
-    RoleModule
+    RoleModule,
+    CacheModule
   ]
 })
 export class AppModule {}
