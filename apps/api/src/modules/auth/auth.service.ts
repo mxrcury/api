@@ -3,6 +3,7 @@ import { compare, genSalt, hash } from 'bcrypt'
 import { PrismaService } from '@libs/prisma'
 import { BadRequestException, Injectable } from '@nestjs/common'
 
+import { memoryStorage } from '@core/memory-storage/memory.storage'
 import { TokenService } from '@modules/token/token.service'
 import { SignInDto } from './dto/sign-in.dto'
 import { SignUpDto } from './dto/sign-up.dto'
@@ -28,8 +29,35 @@ export class AuthService {
     const hashSalt = await genSalt(10)
     const hashedPassword = await hash(password, hashSalt)
 
+    const user = {
+      email,
+      name,
+      password: hashedPassword,
+      roleName: 'GUEST'
+    }
+
+    // for invitation for specific role, by default it will
+    if (token) {
+      const isExistingTokenInvite = memoryStorage.get<{ role: string }>(token)
+
+      if (isExistingTokenInvite) {
+        const role = await this.prismaService.role.findFirst({
+          where: { name: isExistingTokenInvite.role.toUpperCase() }
+        })
+
+        if (!role) {
+          throw new BadRequestException(
+            'Such role for invitation does not exists'
+          )
+        }
+        await this.prismaService.user.create({
+          data: { ...user, roleName: role.name }
+        })
+      }
+    }
+
     await this.prismaService.user.create({
-      data: { email, name, password: hashedPassword }
+      data: user
     })
   }
 
@@ -50,6 +78,20 @@ export class AuthService {
       throw new BadRequestException('You have entered wrong password')
     }
 
-    return this.tokenService.generateTokens({ id: isExistingUser.id })
+    const areExistingTokens = await this.prismaService.tokens.findFirst({
+      where: { userId: isExistingUser.id }
+    })
+
+    if (areExistingTokens) {
+      return {
+        accessToken: areExistingTokens.accessToken,
+        refreshToken: areExistingTokens.refreshToken
+      }
+    }
+
+    return this.tokenService.generateTokens({
+      id: isExistingUser.id,
+      role: isExistingUser.roleName
+    })
   }
 }

@@ -14,6 +14,9 @@ model User {
   name     String
   password String
 
+  role     Role   @relation(fields: [roleName], references: [name], onUpdate: Cascade)
+  roleName String @map("role_name")
+
   tokens Tokens[]
 }
 
@@ -23,6 +26,14 @@ model Tokens {
   accessToken  String @map("access_token")
   refreshToken String @map("refresh_token")
 
-  user   User   @relation(references: [id], fields: [userId])
+  user   User   @relation(references: [id], fields: [userId], onDelete: Cascade)
   userId String @map("user_id")
+}
+
+model Role {
+  name String
+
+  users User[]
+
+  @@unique([name])
 }
