@@ -14,7 +14,7 @@ export class AuthService {
     private readonly tokenService: TokenService
   ) {}
 
-  async signUp(dto: SignUpDto) {
+  async signUp(dto: SignUpDto, token?: string) {
     const { email, name, password } = dto
 
     const isExistingUser = await this.prismaService.user.findFirst({
