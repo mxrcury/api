@@ -48,7 +48,7 @@ $ pnpm run start
 - [x] Add auth based on our DB, exceptions catching
 - [x] Add swagger for documentation
 - [x] Add decorators and guards for restrictions and auth checking, roles
-- [ ] Add redis for caching
+- [x] Add redis for caching
 - [ ] Implement seeding, migrations
 - [ ] Add async local storage
 - [ ] Implement database backup

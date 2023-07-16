@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common'
 
 class MemoryStorage {
-  private _storage = new Map<string, unknown>()
+  private _storage = new Map<string | number, unknown>()
 
   private logger = new Logger()
 
