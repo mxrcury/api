@@ -49,7 +49,7 @@ $ pnpm run start
 - [x] Add swagger for documentation
 - [x] Add decorators and guards for restrictions and auth checking, roles
 - [x] Add redis for caching
-- [ ] Implement seeding, migrations
+- [x] Implement seeding, migrations
 - [ ] Add async local storage
 - [ ] Implement database backup
 - [ ] Add cron

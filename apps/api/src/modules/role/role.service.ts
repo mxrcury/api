@@ -12,7 +12,7 @@ export class RoleService {
   }
 
   async getAll() {
-    return await this.prismaService.role.findMany({ select: { name: true } })
+    return await this.prismaService.role.findMany()
   }
 
   async delete(name: string) {

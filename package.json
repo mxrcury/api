@@ -9,6 +9,9 @@
     "docker": "docker-compose up database redis -d",
     "format": "nx format:write"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed/index.ts"
+  },
   "private": true,
   "dependencies": {
     "@nestjs/cache-manager": "^2.0.1",
