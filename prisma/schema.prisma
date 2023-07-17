@@ -14,10 +14,12 @@ model User {
   name     String
   password String
 
-  role     Role   @relation(fields: [roleName], references: [name], onUpdate: Cascade)
-  roleName String @map("role_name")
+  role     Role?   @relation(fields: [roleName], references: [name], onUpdate: Cascade, onDelete: NoAction)
+  roleName String? @map("role_name")
 
   tokens Tokens[]
+
+  @@unique([email])
 }
 
 model Tokens {
