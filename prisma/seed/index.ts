@@ -67,7 +67,10 @@ class Seed {
   }
 
   private async generateUserData() {
-    const password = await bcrypt.hash('superadmin123!', 8)
+    const password = await bcrypt.hash(
+      process.env.SEED_SUPERADMIN_PASS || '123',
+      8
+    )
     return {
       roleName: 'SUPERADMIN',
       name: 'Super admin',
