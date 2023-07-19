@@ -1,6 +1,8 @@
 import { cookieOptions } from '@configs'
-import { Body, Controller, Post, Query, Res } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { AsyncStorageService } from '@core/async-storage'
+import { Auth } from '@core/decorators'
+import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
 import { SignInDto } from './dto/sign-in.dto'
 import { SignUpDto } from './dto/sign-up.dto'
@@ -8,10 +10,13 @@ import { SignUpDto } from './dto/sign-up.dto'
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private asyncStorage: AsyncStorageService
+  ) {}
 
   @Post('sign-up')
-  async signup(@Body() dto: SignUpDto, @Query('token') token?: string) {
+  signup(@Body() dto: SignUpDto, @Query('token') token?: string) {
     return this.authService.signUp(dto, token)
   }
 
@@ -20,7 +25,12 @@ export class AuthController {
     const token = await this.authService.signIn(dto)
 
     res.cookie('token', token.accessToken, cookieOptions)
+  }
 
-    return token
+  @Get('me')
+  @Auth()
+  @ApiOperation({ summary: 'Get current user' })
+  get() {
+    return this.asyncStorage.get('user')
   }
 }

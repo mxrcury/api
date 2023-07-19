@@ -1,4 +1,5 @@
 import { cookieOptions } from '@configs'
+import { AsyncStorageService } from '@core/async-storage/async-storage.service'
 import { PrismaService } from '@libs/prisma'
 import { TokenService } from '@modules/token'
 import {
@@ -15,7 +16,8 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly tokenService: TokenService,
-    private readonly reflector: Reflector
+    private readonly reflector: Reflector,
+    private readonly asyncStorage: AsyncStorageService
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -47,8 +49,7 @@ export class AuthGuard implements CanActivate {
 
       const { id, roleName: role } = user
 
-      // change logic after adding ALS
-      request.user = { id, role }
+      this.asyncStorage.set('user', { id, role })
 
       return true
     }
@@ -87,8 +88,7 @@ export class AuthGuard implements CanActivate {
 
       response.cookie('token', accessToken, cookieOptions)
 
-      // change logic after adding ALS
-      request.user = { id, role }
+      this.asyncStorage.set('user', { id, role })
 
       return true
     }
