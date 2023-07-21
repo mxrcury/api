@@ -50,7 +50,7 @@ $ pnpm run start
 - [x] Add decorators and guards for restrictions and auth checking, roles
 - [x] Add redis for caching
 - [x] Implement seeding, migrations
-- [ ] Add async local storage
+- [x] Add async local storage
 - [ ] Implement database backup
 - [ ] Add cron
 - [ ] Add mail service
