@@ -31,6 +31,6 @@ export class AuthController {
   @Auth()
   @ApiOperation({ summary: 'Get current user' })
   get() {
-    return this.asyncStorage.get('user')
+    return this.asyncStorage.getUser()
   }
 }
