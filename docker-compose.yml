@@ -23,7 +23,7 @@ services:
       - redis
   database:
     container_name: database
-    image: postgres:15-alpine
+    image: postgres:15.3-alpine
     ports:
       - ${DB_PORT}:5432
     environment:
@@ -33,7 +33,7 @@ services:
       - POSTGRES_HOST=${DB_HOST}
     restart: always
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:${PG_DATA}
     networks:
       - mavy
   redis:
