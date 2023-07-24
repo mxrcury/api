@@ -18,9 +18,12 @@ services:
     networks:
       - mavy
     restart: always
+    depends_on:
+      - database
+      - redis
   database:
     container_name: database
-    image: postgres:latest
+    image: postgres:15-alpine
     ports:
       - ${DB_PORT}:5432
     environment:
@@ -41,5 +44,23 @@ services:
     networks:
       - mavy
     restart: always
+  database-backup:
+    container_name: database-backup
+    build:
+      context: .
+      dockerfile: backup.Dockerfile
+    tty: true
+    environment:
+      - POSTGRES_HOST=database
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PORT=${DB_PORT}
+      - PGPASSWORD=${DB_PASS}
+    depends_on: [database]
+    restart: unless-stopped
+    links:
+      - database
+    networks:
+      - mavy
 volumes:
   pgdata:

@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
 import * as bcrypt from 'bcrypt'
-
 class Seed {
   private readonly prisma = new PrismaClient()
 
