@@ -23,7 +23,7 @@ services:
       - redis
   database:
     container_name: database
-    image: postgres:15.3-alpine
+    image: postgres:15-alpine
     ports:
       - ${DB_PORT}:5432
     environment:
@@ -45,7 +45,6 @@ services:
       - mavy
     restart: always
   database-backup:
-    container_name: database-backup
     build:
       context: .
       dockerfile: backup.Dockerfile
@@ -57,9 +56,8 @@ services:
       - POSTGRES_PORT=${DB_PORT}
       - PGPASSWORD=${DB_PASS}
     depends_on: [database]
-    restart: unless-stopped
-    links:
-      - database
+    volumes:
+      - ./backups:/backup-files
     networks:
       - mavy
 volumes:

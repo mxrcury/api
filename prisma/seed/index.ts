@@ -4,10 +4,6 @@ import * as bcrypt from 'bcrypt'
 class Seed {
   private readonly prisma = new PrismaClient()
 
-  constructor() {
-    this.cleanSeedings()
-  }
-
   async performSeedings() {
     try {
       await this.seedRoles()
