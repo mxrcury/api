@@ -52,7 +52,7 @@ $ pnpm run start
 - [x] Implement seeding, migrations
 - [x] Add async local storage
 - [ ] Implement database backup
-- [ ] Add cron
+- [x] Add cron
 - [ ] Add mail service
 - [ ] Implement working with files and connect to some cloud storage for this action
 - [ ] Implement photos compression to decrease memory what they took

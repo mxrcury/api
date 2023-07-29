@@ -3,6 +3,7 @@ import { compare, genSalt, hash } from 'bcrypt'
 import { PrismaService } from '@libs/prisma'
 import { BadRequestException, Injectable } from '@nestjs/common'
 
+import { MailService } from '@core/mail'
 import { memoryStorage } from '@core/memory-storage/memory.storage'
 import { TokenService } from '@modules/token/token.service'
 import { SignInDto } from './dto/sign-in.dto'
@@ -12,7 +13,8 @@ import { SignUpDto } from './dto/sign-up.dto'
 export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    private readonly mailService: MailService
   ) {}
 
   async signUp(dto: SignUpDto, token?: string) {
@@ -94,4 +96,13 @@ export class AuthService {
       role: isExistingUser.roleName
     })
   }
+
+  // async test() {
+  //   await this.mailService.sendMail({
+  //     from: 'demetrgonchar@gmail.com',
+  //     to: 'joran321321@gmail.com',
+  //     subject: 'My mail',
+  //     text: 'some text body'
+  //   })
+  // }
 }

@@ -2,6 +2,9 @@ import { z } from 'zod'
 
 import { parseEnvs } from '@utils'
 
+const stringToNumber = (arg: string | number) =>
+  typeof arg === 'string' ? Number(arg) : arg
+
 const envSchema = z.object({
   // Server port
   PORT: z.string(),
@@ -17,10 +20,12 @@ const envSchema = z.object({
   CLIENT_DOMAIN: z.string(),
 
   // Redis DB
-  REDIS_PORT: z
-    .string()
-    .transform((arg) => (typeof arg === 'string' ? Number(arg) : arg)),
-  REDIS_HOST: z.string()
+  REDIS_PORT: z.string().transform(stringToNumber),
+  REDIS_HOST: z.string(),
+
+  // Mail
+  MAIL_HOST: z.string(),
+  MAIL_PORT: z.string().transform(stringToNumber)
 })
 
 export const env = parseEnvs<typeof envSchema>(envSchema)

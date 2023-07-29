@@ -33,4 +33,10 @@ export class AuthController {
   get() {
     return this.asyncStorage.getUser()
   }
+
+  // @Get('test')
+  // @ApiOperation({ summary: 'test' })
+  // test() {
+  //   return this.authService.test()
+  // }
 }
