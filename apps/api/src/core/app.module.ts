@@ -9,9 +9,9 @@ import { AsyncStorageModule } from '@core/async-storage'
 import { CacheModule } from '@core/cache'
 import { CronModule } from '@core/cron'
 import { ExceptionModule } from '@core/exceptions'
+import { MailModule } from '@core/mail'
 import { SwaggerModule } from '@core/swagger'
 
-import { MailModule } from '@core/mail'
 import { PrismaModule } from '@libs/prisma'
 
 @Module({

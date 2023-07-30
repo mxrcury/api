@@ -1,13 +1,15 @@
+import * as jwt from 'jsonwebtoken'
+
+import { BadRequestException, Injectable } from '@nestjs/common'
+
 import { env } from '@configs'
 import { PrismaService } from '@libs/prisma'
-import { BadRequestException, Injectable } from '@nestjs/common'
-import * as jwt from 'jsonwebtoken'
-import { IBasicTokenPayload } from './token.interface'
+import { IBasicTokenPayload } from '@modules/token'
 
 @Injectable()
 export class TokenService {
   constructor(private readonly prismaService: PrismaService) {}
-  // TODO: move tokens saving to redis when it will be connected
+  // TODO: move tokens saving to redis when it will be connected!!!
 
   async generateTokens<P extends IBasicTokenPayload>(payload: P) {
     try {

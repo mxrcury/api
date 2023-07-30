@@ -1,9 +1,11 @@
 import { cookieOptions } from '@configs'
 import { AsyncStorageService } from '@core/async-storage'
-import { Auth } from '@core/decorators'
+import { Auth, Roles } from '@core/decorators'
+import { Role } from '@modules/role'
 import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
+import { SendMailDto } from './dto/send-mail.dto'
 import { SignInDto } from './dto/sign-in.dto'
 import { SignUpDto } from './dto/sign-up.dto'
 
@@ -34,9 +36,10 @@ export class AuthController {
     return this.asyncStorage.getUser()
   }
 
-  // @Get('test')
-  // @ApiOperation({ summary: 'test' })
-  // test() {
-  //   return this.authService.test()
-  // }
+  @Post('send-mail')
+  @Roles(Role.ADMIN, Role.SUPERADMIN)
+  @ApiOperation({ summary: 'Send email from server, allowed only for admins' })
+  sendMail(@Body() dto: SendMailDto) {
+    return this.authService.sendMail(dto)
+  }
 }

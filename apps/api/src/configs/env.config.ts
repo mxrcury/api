@@ -24,8 +24,11 @@ const envSchema = z.object({
   REDIS_HOST: z.string(),
 
   // Mail
-  MAIL_HOST: z.string(),
-  MAIL_PORT: z.string().transform(stringToNumber)
+  MAIL_CLIENT_ID: z.string(),
+  MAIL_CLIENT_SECRET: z.string(),
+  MAIL_USER: z.string(),
+  MAIL_PASS: z.string(),
+  MAIL_REFRESH_TOKEN: z.string()
 })
 
 export const env = parseEnvs<typeof envSchema>(envSchema)

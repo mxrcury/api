@@ -53,7 +53,8 @@ $ pnpm run start
 - [x] Add async local storage
 - [ ] Implement database backup
 - [x] Add cron
-- [ ] Add mail service
+- [x] Add mail service
+- [ ] Implement auth with codes and some other features conncted with sending mails, cron
 - [ ] Implement working with files and connect to some cloud storage for this action
 - [ ] Implement photos compression to decrease memory what they took
 - [ ] Add using interceptors, pipes, custom decorators, middlewares

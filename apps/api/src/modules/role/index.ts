@@ -1,2 +1,5 @@
+export * from './dto/create-role.dto'
+export * from './role.controller'
 export * from './role.enum'
 export * from './role.module'
+export * from './role.service'

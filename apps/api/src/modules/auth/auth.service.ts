@@ -6,6 +6,7 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { MailService } from '@core/mail'
 import { memoryStorage } from '@core/memory-storage/memory.storage'
 import { TokenService } from '@modules/token/token.service'
+import { SendMailDto } from './dto/send-mail.dto'
 import { SignInDto } from './dto/sign-in.dto'
 import { SignUpDto } from './dto/sign-up.dto'
 
@@ -97,12 +98,13 @@ export class AuthService {
     })
   }
 
-  // async test() {
-  //   await this.mailService.sendMail({
-  //     from: 'demetrgonchar@gmail.com',
-  //     to: 'joran321321@gmail.com',
-  //     subject: 'My mail',
-  //     text: 'some text body'
-  //   })
-  // }
+  async sendMail({ title, to, subject, text, html }: SendMailDto) {
+    return await this.mailService.sendMail({
+      from: `Mavy server / ${title} <mavy@gmail.com>`,
+      to,
+      subject,
+      text,
+      html
+    })
+  }
 }
