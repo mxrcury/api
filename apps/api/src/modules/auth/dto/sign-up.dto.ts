@@ -45,4 +45,13 @@ export class SignUpDto {
     description: 'Token for invitation'
   })
   token?: string
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    example: '1234',
+    required: false,
+    description: 'Confirmation code for sign up'
+  })
+  confirmationCode?: string
 }

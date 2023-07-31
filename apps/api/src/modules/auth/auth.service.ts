@@ -6,7 +6,10 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { CacheService } from '@core/cache'
 import { MailService } from '@core/mail'
 import { TokenService } from '@modules/token/token.service'
-import { InvitationTokenPayload } from './auth.interface'
+import {
+  ConfirmationCodePayload,
+  InvitationTokenPayload
+} from './auth.interface'
 import { InviteDto } from './dto/invite.dto'
 import { SendMailDto } from './dto/send-mail.dto'
 import { SignInDto } from './dto/sign-in.dto'
@@ -22,7 +25,7 @@ export class AuthService {
   ) {}
 
   async signUp(dto: SignUpDto) {
-    const { email, name, password, token } = dto
+    const { email, name, password, token, confirmationCode } = dto
 
     const isExistingUser = await this.prismaService.user.findFirst({
       where: { email }
@@ -30,6 +33,37 @@ export class AuthService {
 
     if (isExistingUser) {
       throw new BadRequestException('User with such email already exists')
+    }
+
+    if (!confirmationCode) {
+      const code = this.tokenService.generateRandomToken(6)
+
+      await this.sendMail({
+        title: 'Authorization code',
+        subject: 'Authorization code',
+        to: email,
+        text: `Your authorization code is ${code}`,
+        html: `<div><p>Your authorization code is <b>${code}</b></p></div>`
+      })
+
+      await this.cacheStorage.set(
+        code,
+        { confirmationCode: code, email },
+        60 * 60 * 5
+      )
+
+      return {
+        message: 'Confirmation code for authorizing was sent to your email'
+      }
+    } else {
+      const isExistingCode =
+        await this.cacheStorage.get<ConfirmationCodePayload>(confirmationCode)
+
+      if (!isExistingCode && isExistingCode?.email !== email) {
+        throw new BadRequestException(
+          'Such confirmation code does not exist or was expired'
+        )
+      }
     }
 
     const hashSalt = await genSalt(10)

@@ -72,7 +72,7 @@ export class TokenService {
       .toString('base64')
       .replace(/=/g, '')
       .replace(/\//g, '')
-      .replace('/+/g', '')
+      .replace(/\+/g, '')
   }
 
   validateAccessToken(token: string) {
