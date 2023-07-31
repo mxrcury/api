@@ -29,7 +29,12 @@ const envSchema = z.object({
   MAIL_CLIENT_SECRET: z.string(),
   MAIL_USER: z.string(),
   MAIL_PASS: z.string(),
-  MAIL_REFRESH_TOKEN: z.string()
+  MAIL_REFRESH_TOKEN: z.string(),
+
+  // AWS
+  AWS_BUCKET_NAME: z.string(),
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_ACCESS_KEY: z.string()
 })
 
 export const env = parseEnvs<typeof envSchema>(envSchema)

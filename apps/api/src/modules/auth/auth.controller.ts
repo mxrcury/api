@@ -2,7 +2,16 @@ import { cookieOptions } from '@configs'
 import { AsyncStorageService } from '@core/async-storage'
 import { Auth, Roles } from '@core/decorators'
 import { Role } from '@modules/role'
-import { Body, Controller, Get, Post, Res } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Res,
+  UploadedFile,
+  UseInterceptors
+} from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
 import { InviteDto } from './dto/invite.dto'
@@ -47,5 +56,12 @@ export class AuthController {
   @ApiOperation({ summary: 'Send email from server, allowed only for admins' })
   sendMail(@Body() dto: SendMailDto) {
     return this.authService.sendMail(dto)
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Upload file to S3' })
+  upload(@UploadedFile() file: Express.Multer.File) {
+    return this.authService.uploadFile(file)
   }
 }

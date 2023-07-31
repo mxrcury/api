@@ -9,6 +9,7 @@ import { AsyncStorageModule } from '@core/async-storage'
 import { CacheModule } from '@core/cache'
 import { CronModule } from '@core/cron'
 import { ExceptionModule } from '@core/exceptions'
+import { FileModule } from '@core/file'
 import { MailModule } from '@core/mail'
 import { SwaggerModule } from '@core/swagger'
 
@@ -26,7 +27,8 @@ import { PrismaModule } from '@libs/prisma'
     AsyncStorageModule,
     ScheduleModule.forRoot(),
     CronModule,
-    MailModule
+    MailModule,
+    FileModule
   ]
 })
 export class AppModule {}

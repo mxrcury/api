@@ -4,6 +4,7 @@ import { PrismaService } from '@libs/prisma'
 import { BadRequestException, Injectable } from '@nestjs/common'
 
 import { CacheService } from '@core/cache'
+import { FileService } from '@core/file'
 import { MailService } from '@core/mail'
 import { TokenService } from '@modules/token/token.service'
 import {
@@ -21,7 +22,8 @@ export class AuthService {
     private readonly prismaService: PrismaService,
     private readonly tokenService: TokenService,
     private readonly mailService: MailService,
-    private readonly cacheStorage: CacheService
+    private readonly cacheStorage: CacheService,
+    private readonly fileService: FileService
   ) {}
 
   async signUp(dto: SignUpDto) {
@@ -172,5 +174,9 @@ export class AuthService {
       text,
       html
     })
+  }
+
+  async uploadFile(file: Express.Multer.File) {
+    return await this.fileService.save(file)
   }
 }
