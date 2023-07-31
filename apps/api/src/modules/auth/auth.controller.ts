@@ -2,9 +2,10 @@ import { cookieOptions } from '@configs'
 import { AsyncStorageService } from '@core/async-storage'
 import { Auth, Roles } from '@core/decorators'
 import { Role } from '@modules/role'
-import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common'
+import { Body, Controller, Get, Post, Res } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
+import { InviteDto } from './dto/invite.dto'
 import { SendMailDto } from './dto/send-mail.dto'
 import { SignInDto } from './dto/sign-in.dto'
 import { SignUpDto } from './dto/sign-up.dto'
@@ -18,8 +19,8 @@ export class AuthController {
   ) {}
 
   @Post('sign-up')
-  signup(@Body() dto: SignUpDto, @Query('token') token?: string) {
-    return this.authService.signUp(dto, token)
+  signup(@Body() dto: SignUpDto) {
+    return this.authService.signUp(dto)
   }
 
   @Post('sign-in')
@@ -27,6 +28,11 @@ export class AuthController {
     const token = await this.authService.signIn(dto)
 
     res.cookie('token', token.accessToken, cookieOptions)
+  }
+
+  @Post('generate-invite')
+  async generateInvite(@Body() dto: InviteDto) {
+    return this.authService.generateInvite(dto)
   }
 
   @Get('me')

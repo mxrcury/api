@@ -6,8 +6,9 @@ const stringToNumber = (arg: string | number) =>
   typeof arg === 'string' ? Number(arg) : arg
 
 const envSchema = z.object({
-  // Server port
+  // Server
   PORT: z.string(),
+  CLIENT_URL: z.string(),
 
   // Jwt
   ACCESS_SECRET_KEY: z.string(),

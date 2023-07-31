@@ -67,11 +67,12 @@ export class TokenService {
     return token
   }
 
-  generateRandomToken() {
-    return randomBytes(50)
+  generateRandomToken(size: number) {
+    return randomBytes(size)
       .toString('base64')
       .replace(/=/g, '')
       .replace(/\//g, '')
+      .replace('/+/g', '')
   }
 
   validateAccessToken(token: string) {

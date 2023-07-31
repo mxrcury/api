@@ -3,9 +3,11 @@ import { compare, genSalt, hash } from 'bcrypt'
 import { PrismaService } from '@libs/prisma'
 import { BadRequestException, Injectable } from '@nestjs/common'
 
+import { CacheService } from '@core/cache'
 import { MailService } from '@core/mail'
-import { memoryStorage } from '@core/memory-storage/memory.storage'
 import { TokenService } from '@modules/token/token.service'
+import { InvitationTokenPayload } from './auth.interface'
+import { InviteDto } from './dto/invite.dto'
 import { SendMailDto } from './dto/send-mail.dto'
 import { SignInDto } from './dto/sign-in.dto'
 import { SignUpDto } from './dto/sign-up.dto'
@@ -15,11 +17,12 @@ export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly tokenService: TokenService,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
+    private readonly cacheStorage: CacheService
   ) {}
 
-  async signUp(dto: SignUpDto, token?: string) {
-    const { email, name, password } = dto
+  async signUp(dto: SignUpDto) {
+    const { email, name, password, token } = dto
 
     const isExistingUser = await this.prismaService.user.findFirst({
       where: { email }
@@ -39,9 +42,9 @@ export class AuthService {
       roleName: 'GUEST'
     }
 
-    // for invitation for specific role, by default it will
     if (token) {
-      const isExistingTokenInvite = memoryStorage.get<{ role: string }>(token)
+      const isExistingTokenInvite =
+        await this.cacheStorage.get<InvitationTokenPayload>(token)
 
       if (isExistingTokenInvite) {
         const role = await this.prismaService.role.findFirst({
@@ -56,6 +59,8 @@ export class AuthService {
         await this.prismaService.user.create({
           data: { ...user, roleName: role.name }
         })
+
+        return
       }
     }
 
@@ -98,9 +103,36 @@ export class AuthService {
     })
   }
 
+  async generateInvite({ role, email }: InviteDto) {
+    const isExistingRole = await this.prismaService.role.findFirst({
+      where: { name: role.toUpperCase() }
+    })
+
+    if (!isExistingRole)
+      throw new BadRequestException('Such role does not exist')
+
+    const token = this.tokenService.generateRandomToken(30)
+    const ttl = 60 * 60 * 24 * 2
+
+    await this.cacheStorage.set(token, { role, email }, ttl)
+
+    await this.sendMail({
+      title: 'Invite for authorization',
+      to: email,
+      subject: 'Invite for authorization',
+      text: `You have been invited to the Mavy server as ${role}`,
+      html: `<div>
+        <p><b>You have been invited to the Mavy server as ${role}</b></p> 
+        <p>Use this token for invitation <input value="${token}" disabled="disabled" maxlength="${
+        token.length + 6
+      }" size="${token.length + 6}" /></p>
+        </div>`
+    })
+  }
+
   async sendMail({ title, to, subject, text, html }: SendMailDto) {
     return await this.mailService.sendMail({
-      from: `Mavy server / ${title} <mavy@gmail.com>`,
+      from: `Mavy server / ${title} <no-reply@gmail.com>`,
       to,
       subject,
       text,
