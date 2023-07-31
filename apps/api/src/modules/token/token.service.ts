@@ -5,6 +5,7 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { env } from '@configs'
 import { PrismaService } from '@libs/prisma'
 import { IBasicTokenPayload } from '@modules/token'
+import { randomBytes } from 'crypto'
 
 @Injectable()
 export class TokenService {
@@ -64,6 +65,13 @@ export class TokenService {
     }
 
     return token
+  }
+
+  generateRandomToken() {
+    return randomBytes(50)
+      .toString('base64')
+      .replace(/=/g, '')
+      .replace(/\//g, '')
   }
 
   validateAccessToken(token: string) {
