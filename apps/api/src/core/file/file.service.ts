@@ -1,53 +1,63 @@
-import { env } from '@configs/env.config'
-import { Injectable, OnModuleInit } from '@nestjs/common'
-import * as AWS from 'aws-sdk'
-import { extname } from 'path'
-import { FileStorage, Response } from './file.interface'
+import { Injectable } from '@nestjs/common'
+import { BANNED_FOR_FILE_LIMIT } from './file.contants'
+import {
+  FileStorage,
+  IFileServiceOptions,
+  IResponse,
+  IStorageOptions
+} from './file.interface'
 
 @Injectable()
-export class FileService implements FileStorage, OnModuleInit {
-  private storage: AWS.S3
-  onModuleInit() {
-    this.storage = new AWS.S3({
-      credentials: {
-        accessKeyId: env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: env.AWS_SECRET_ACCESS_KEY
-      }
-    })
+export class FileService implements FileStorage {
+  private storage: FileStorage
+
+  constructor({ storage, bucket, ...options }: IFileServiceOptions) {
+    this.storage = storage
+    this.storage.bucket = bucket
+    this.storage.options = options
   }
-  async delete(key: string): Promise<Response> {
-    await this.storage
-      .deleteObject({ Bucket: env.AWS_BUCKET_NAME, Key: key })
-      .promise()
+  async delete(key: string) {
+    await this.storage.delete(key)
 
     return {
       status: 204
     }
   }
-  async save(file: Express.Multer.File): Promise<Response> {
-    const baseFileName = file.originalname.slice(
-      0,
-      file.originalname.lastIndexOf('.')
-    )
-    const ext = extname(file.originalname)
-    const fileName = `${baseFileName}_${Date.now()}${ext})}`
+  async save(file: Express.Multer.File): Promise<IResponse> {
+    const fileLimit = this.storage.options.fileLimit.limit
+    const perSeconds = this.options.fileLimit.perSeconds
+    const uploadedFiles = 22
 
-    const response = await this.storage
-      .upload({
-        Bucket: env.AWS_BUCKET_NAME,
-        Key: fileName,
-        Body: file.buffer,
-        ContentType: file.mimetype
-      })
-      .promise()
+    if (fileLimit > uploadedFiles) {
+      // ban user, change ofc
+      const ban = (user: string, secs: number) => {
+        console.log('Ban ->', user, 'Per ->', secs)
+      }
 
-    const url = await this.storage.getSignedUrlPromise('getObject', {
-      Bucket: env.AWS_BUCKET_NAME,
-      Key: response.Key
-    })
+      ban('jordan', perSeconds)
+
+      throw new Error(BANNED_FOR_FILE_LIMIT)
+    }
+
+    const { url } = await this.storage.save(file)
+
     return {
       url,
       status: 201
     }
+  }
+
+  public set options(value: IStorageOptions) {
+    this.storage.options = value
+  }
+
+  public set bucket(value: string) {
+    if (typeof value === 'string' && value.trim().length) {
+      this.storage.bucket = value
+    }
+  }
+
+  public get bucket() {
+    return this.storage.bucket
   }
 }
