@@ -7,3 +7,4 @@ export const BANNED_FOR_FILE_LIMIT =
 export const S3_STORAGE = 'S3_STORAGE'
 export const FIREBASE_STORAGE = 'FIREBASE_STORAGE'
 export const LOCAL_STORAGE = 'LOCAL_STORAGE'
+export const AZURE_STORAGE = 'AZURE_STORAGE'

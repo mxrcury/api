@@ -1,4 +1,3 @@
-import { extname } from 'path'
 import { SETTER_BUCKET_WRONG_VALUE } from '../file.contants'
 import {
   FileStorage,
@@ -18,15 +17,8 @@ export class FirebaseStorage implements FileStorage {
     }
   }
   async save(file: Express.Multer.File) {
-    const baseFileName = file.originalname.slice(
-      0,
-      file.originalname.lastIndexOf('.')
-    )
-    const ext = extname(file.originalname)
-    const fileName = `${baseFileName}_${Date.now()}${ext})}`
-
     return {
-      url: fileName,
+      url: file.originalname,
       success: true
     }
   }

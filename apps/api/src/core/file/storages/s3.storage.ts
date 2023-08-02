@@ -1,5 +1,4 @@
 import * as AWS from 'aws-sdk'
-import { extname } from 'path'
 import { SETTER_BUCKET_WRONG_VALUE } from '../file.contants'
 import {
   FileStorage,
@@ -17,17 +16,10 @@ export class S3Storage implements FileStorage {
     return { success: true }
   }
   async save(file: Express.Multer.File) {
-    const baseFileName = file.originalname.slice(
-      0,
-      file.originalname.lastIndexOf('.')
-    )
-    const ext = extname(file.originalname)
-    const fileName = `${baseFileName}_${Date.now()}${ext})}`
-
     const response = await this.storage
       .upload({
         Bucket: this.bucket,
-        Key: fileName,
+        Key: file.originalname,
         Body: file.buffer,
         ContentType: file.mimetype
       })

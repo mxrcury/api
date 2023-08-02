@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common'
+import { randomBytes } from 'crypto'
+import { extname } from 'path'
 import {
   FileStorage,
   IFileServiceOptions,
@@ -28,7 +30,10 @@ export class FileService implements FileStorage {
   }
   async save(file: Express.Multer.File) {
     try {
-      const { url } = await this.storage.save(file)
+      const { url } = await this.storage.save({
+        ...file,
+        originalname: this.generateFileName(file.originalname)
+      })
 
       return {
         url,
@@ -44,6 +49,29 @@ export class FileService implements FileStorage {
     }
   }
 
+  private generateFileName(fileName: string) {
+    const { file } = this.options
+    const ext = extname(fileName)
+
+    if (file.generateRandomName) {
+      return randomBytes(9).toString('hex') + ext
+    }
+
+    const originalName = this.options.file.includeBaseName
+      ? fileName.slice(0, fileName.lastIndexOf('.'))
+      : ''
+
+    const uniqueIdentifier = file.includeDate
+      ? Date.now()
+      : randomBytes(9).toString('hex')
+
+    const baseName = originalName.length
+      ? originalName + '_' + uniqueIdentifier
+      : uniqueIdentifier
+
+    return `${file.prefix}${baseName}${file.postfix}${ext}`
+  }
+
   public set options(value: IStorageOptions) {
     this.storage.options = value
   }
@@ -52,20 +80,3 @@ export class FileService implements FileStorage {
     return this.storage.bucket
   }
 }
-
-// const fileLimit = this.storage.options.fileLimit.limit
-// const perSeconds = this.options.fileLimit.perSeconds
-// const uploadedFiles = 22
-
-// if (fileLimit > uploadedFiles) {
-//   // ban user, change ofc
-//   const ban = (user: string, secs: number) => {
-//     console.log('Ban ->', user, 'Per ->', secs)
-//   }
-
-//   ban('jordan', perSeconds)
-
-//   return {
-//     success: false
-//   }
-// }

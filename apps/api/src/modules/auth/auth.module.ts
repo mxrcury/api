@@ -19,7 +19,10 @@ import { AuthService } from './auth.service'
           storage: new LocalStorage({
             localFolder: 'public'
           }),
-          bucket: 'photos'
+          bucket: 'photos',
+          file: {
+            generateRandomName: true
+          }
         })
       }
     }

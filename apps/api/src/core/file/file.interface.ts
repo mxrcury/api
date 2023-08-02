@@ -16,10 +16,19 @@ export interface ILocalStorageOptions {
   localFolder: string
 }
 
+type TFileNamePatterns = string | number | Date
+
 export interface IStorageOptions {
   fileLimit?: {
     limit: number
     perSeconds: number
+  }
+  file?: {
+    prefix?: TFileNamePatterns
+    postfix?: TFileNamePatterns
+    includeBaseName?: boolean
+    generateRandomName?: boolean
+    includeDate?: boolean // if false it will generate additionally some random characters to make file unique
   }
 }
 
