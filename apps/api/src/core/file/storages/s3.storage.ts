@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk'
 import { extname } from 'path'
-import { SETTER_WRONG_VALUE } from '../file.contants'
+import { SETTER_BUCKET_WRONG_VALUE } from '../file.contants'
 import {
   FileStorage,
   IStorageOptions,
@@ -14,7 +14,7 @@ export class S3Storage implements FileStorage {
   }
   async delete(key: string) {
     await this.storage.deleteObject({ Bucket: this.bucket, Key: key }).promise()
-    return
+    return { success: true }
   }
   async save(file: Express.Multer.File) {
     const baseFileName = file.originalname.slice(
@@ -38,9 +38,7 @@ export class S3Storage implements FileStorage {
       Key: response.Key
     })
 
-    return {
-      url
-    }
+    return { url, success: true }
   }
 
   set options(value: IStorageOptions) {
@@ -50,8 +48,9 @@ export class S3Storage implements FileStorage {
   set bucket(value: string) {
     if (typeof value === 'string' && value.trim().length) {
       this.$bucket = value
+      return
     }
-    throw new Error(SETTER_WRONG_VALUE)
+    throw new Error(SETTER_BUCKET_WRONG_VALUE)
   }
 
   get bucket() {

@@ -1,10 +1,11 @@
 import { compare, genSalt, hash } from 'bcrypt'
 
 import { PrismaService } from '@libs/prisma'
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 
 import { CacheService } from '@core/cache'
 import { FileService } from '@core/file'
+import { LOCAL_STORAGE } from '@core/file/file.contants'
 import { MailService } from '@core/mail'
 import { TokenService } from '@modules/token/token.service'
 import {
@@ -23,7 +24,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly mailService: MailService,
     private readonly cacheStorage: CacheService,
-    private readonly fileService: FileService
+    @Inject(LOCAL_STORAGE) private readonly fileService: FileService
   ) {}
 
   async signUp(dto: SignUpDto) {

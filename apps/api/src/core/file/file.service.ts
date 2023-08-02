@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { BANNED_FOR_FILE_LIMIT } from './file.contants'
 import {
   FileStorage,
   IFileServiceOptions,
-  IResponse,
   IStorageOptions
 } from './file.interface'
 
@@ -17,33 +15,32 @@ export class FileService implements FileStorage {
     this.storage.options = options
   }
   async delete(key: string) {
-    await this.storage.delete(key)
-
-    return {
-      status: 204
+    try {
+      return await this.storage.delete(key)
+    } catch (error) {
+      if (error instanceof Error) {
+        return {
+          success: false,
+          errorMessage: error.message
+        }
+      }
     }
   }
-  async save(file: Express.Multer.File): Promise<IResponse> {
-    const fileLimit = this.storage.options.fileLimit.limit
-    const perSeconds = this.options.fileLimit.perSeconds
-    const uploadedFiles = 22
+  async save(file: Express.Multer.File) {
+    try {
+      const { url } = await this.storage.save(file)
 
-    if (fileLimit > uploadedFiles) {
-      // ban user, change ofc
-      const ban = (user: string, secs: number) => {
-        console.log('Ban ->', user, 'Per ->', secs)
+      return {
+        url,
+        success: true
       }
-
-      ban('jordan', perSeconds)
-
-      throw new Error(BANNED_FOR_FILE_LIMIT)
-    }
-
-    const { url } = await this.storage.save(file)
-
-    return {
-      url,
-      status: 201
+    } catch (error) {
+      if (error instanceof Error) {
+        return {
+          success: false,
+          errorMessage: error.message
+        }
+      }
     }
   }
 
@@ -51,13 +48,24 @@ export class FileService implements FileStorage {
     this.storage.options = value
   }
 
-  public set bucket(value: string) {
-    if (typeof value === 'string' && value.trim().length) {
-      this.storage.bucket = value
-    }
-  }
-
   public get bucket() {
     return this.storage.bucket
   }
 }
+
+// const fileLimit = this.storage.options.fileLimit.limit
+// const perSeconds = this.options.fileLimit.perSeconds
+// const uploadedFiles = 22
+
+// if (fileLimit > uploadedFiles) {
+//   // ban user, change ofc
+//   const ban = (user: string, secs: number) => {
+//     console.log('Ban ->', user, 'Per ->', secs)
+//   }
+
+//   ban('jordan', perSeconds)
+
+//   return {
+//     success: false
+//   }
+// }

@@ -1,5 +1,9 @@
-export const SETTER_WRONG_VALUE =
+export const SETTER_BUCKET_WRONG_VALUE =
   'You have entered wrong bucket name, it must be string and not empty'
 
 export const BANNED_FOR_FILE_LIMIT =
   'You have got limit of loaded files, please wait 10 minutes to load more'
+
+export const S3_STORAGE = 'S3_STORAGE'
+export const FIREBASE_STORAGE = 'FIREBASE_STORAGE'
+export const LOCAL_STORAGE = 'LOCAL_STORAGE'

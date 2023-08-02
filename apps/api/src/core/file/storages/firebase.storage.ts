@@ -1,5 +1,5 @@
 import { extname } from 'path'
-import { SETTER_WRONG_VALUE } from '../file.contants'
+import { SETTER_BUCKET_WRONG_VALUE } from '../file.contants'
 import {
   FileStorage,
   IFirebaseStorageOptions,
@@ -13,7 +13,9 @@ export class FirebaseStorage implements FileStorage {
   async delete(key: string) {
     console.log(key)
 
-    return
+    return {
+      success: true
+    }
   }
   async save(file: Express.Multer.File) {
     const baseFileName = file.originalname.slice(
@@ -24,24 +26,27 @@ export class FirebaseStorage implements FileStorage {
     const fileName = `${baseFileName}_${Date.now()}${ext})}`
 
     return {
-      url: fileName
+      url: fileName,
+      success: true
     }
   }
 
-  public set options(value: IStorageOptions) {
-    this.options = value
+  set options(value: IStorageOptions) {
+    this.$options = value
   }
 
-  public set bucket(value: string) {
+  set bucket(value: string) {
     if (typeof value === 'string' && value.trim().length) {
       this.$bucket = value
+      return
     }
-    throw new Error(SETTER_WRONG_VALUE)
+    throw new Error(SETTER_BUCKET_WRONG_VALUE)
   }
 
-  public get bucket() {
+  get bucket() {
     return this.$bucket
   }
 
+  private $options: IStorageOptions
   private $bucket: string
 }
