@@ -16,6 +16,7 @@ const envSchema = z.object({
 
   REFRESH_SECRET_KEY: z.string(),
   REFRESH_TOKEN_EXPIRES_IN: z.string(),
+  REFRESH_TOKEN_EXPIRES_IN_SEC:z.string().transform(stringToNumber),
 
   // Client
   CLIENT_DOMAIN: z.string(),

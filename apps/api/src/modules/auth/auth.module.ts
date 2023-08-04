@@ -1,5 +1,5 @@
 import { FileService } from '@core/file'
-import { LOCAL_STORAGE } from '@core/file/file.contants'
+import { LOCAL_STORAGE } from '@core/file/file.constants'
 import { LocalStorage } from '@core/file/storages/local.storage'
 import { TokenModule, TokenService } from '@modules/token'
 import { Module } from '@nestjs/common'

@@ -1,5 +1,6 @@
 import * as AWS from 'aws-sdk'
-import { SETTER_BUCKET_WRONG_VALUE } from '../file.contants'
+
+import { SETTER_BUCKET_WRONG_VALUE } from '../file.constants'
 import {
   FileStorage,
   IStorageOptions,

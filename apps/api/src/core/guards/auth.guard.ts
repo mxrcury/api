@@ -1,5 +1,7 @@
 import { cookieOptions } from '@configs'
 import { AsyncStorageService } from '@core/async-storage/async-storage.service'
+import { CacheService } from '@core/cache'
+import { IUserTokenPayload } from '@core/interfaces/auth.interface'
 import { PrismaService } from '@libs/prisma'
 import { TokenService } from '@modules/token'
 import {
@@ -15,10 +17,11 @@ import { Reflector } from '@nestjs/core'
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly cacheService: CacheService,
     private readonly tokenService: TokenService,
     private readonly reflector: Reflector,
     private readonly asyncStorage: AsyncStorageService
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest()
@@ -54,9 +57,7 @@ export class AuthGuard implements CanActivate {
       return true
     }
 
-    const tokens = await this.prismaService.tokens.findFirst({
-      where: { accessToken: token }
-    })
+    const tokens = await this.cacheService.get<IUserTokenPayload>(token)
 
     if (tokens) {
       const isValidRefreshToken = this.tokenService.validateRefreshToken(
@@ -64,7 +65,7 @@ export class AuthGuard implements CanActivate {
       )
 
       if (!isValidRefreshToken) {
-        await this.prismaService.tokens.delete({ where: { id: tokens.id } })
+        await this.cacheService.del(token)
 
         throw new UnauthorizedException()
       }
@@ -83,6 +84,8 @@ export class AuthGuard implements CanActivate {
         id,
         role
       })
+
+      await this.cacheService.set(accessToken, { userId: id, refreshToken: tokens.refreshToken })
 
       const response = context.switchToHttp().getResponse()
 

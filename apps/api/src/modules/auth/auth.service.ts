@@ -5,7 +5,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 
 import { CacheService } from '@core/cache'
 import { FileService } from '@core/file'
-import { LOCAL_STORAGE } from '@core/file/file.contants'
+import { LOCAL_STORAGE } from '@core/file/file.constants'
 import { MailService } from '@core/mail'
 import { TokenService } from '@modules/token/token.service'
 import {

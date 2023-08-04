@@ -72,11 +72,28 @@ export class FileService implements FileStorage {
     return `${file.prefix}${baseName}${file.postfix}${ext}`
   }
 
-  public set options(value: IStorageOptions) {
+  set options(value: IStorageOptions) {
     this.storage.options = value
   }
 
-  public get bucket() {
+  get bucket() {
     return this.storage.bucket
   }
 }
+
+// const fileLimit = this.storage.options.fileLimit.limit
+// const perSeconds = this.options.fileLimit.perSeconds
+// const uploadedFiles = 22
+
+// if (fileLimit > uploadedFiles) {
+//   // ban user, change ofc
+//   const ban = (user: string, secs: number) => {
+//     console.log('Ban ->', user, 'Per ->', secs)
+//   }
+
+//   ban('jordan', perSeconds)
+
+//   return {
+//     success: false
+//   }
+// }
