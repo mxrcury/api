@@ -17,19 +17,7 @@ model User {
   role     Role?   @relation(fields: [roleName], references: [name], onUpdate: Cascade, onDelete: NoAction)
   roleName String? @map("role_name")
 
-  tokens Tokens[]
-
   @@unique([email])
-}
-
-model Tokens {
-  id String @id @default(cuid())
-
-  accessToken  String @map("access_token")
-  refreshToken String @map("refresh_token")
-
-  user   User   @relation(references: [id], fields: [userId], onDelete: Cascade)
-  userId String @map("user_id")
 }
 
 model Role {
