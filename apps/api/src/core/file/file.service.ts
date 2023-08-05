@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { randomBytes } from 'crypto'
 import { extname } from 'path'
-import {
-  FileStorage,
-  IFileServiceOptions,
-  IStorageOptions
-} from './file.interface'
+import { FileStorage, IFileServiceOptions, IResponse } from './file.interface'
 
 @Injectable()
-export class FileService implements FileStorage {
+export class FileService {
   private storage: FileStorage
 
   constructor({ storage, bucket, ...options }: IFileServiceOptions) {
@@ -16,7 +12,7 @@ export class FileService implements FileStorage {
     this.storage.bucket = bucket
     this.storage.options = options
   }
-  async delete(key: string) {
+  async delete(key: string): Promise<IResponse> {
     try {
       return await this.storage.delete(key)
     } catch (error) {
@@ -28,7 +24,7 @@ export class FileService implements FileStorage {
       }
     }
   }
-  async save(file: Express.Multer.File) {
+  async save(file: Express.Multer.File): Promise<IResponse> {
     try {
       const { url } = await this.storage.save({
         ...file,
@@ -50,14 +46,14 @@ export class FileService implements FileStorage {
   }
 
   private generateFileName(fileName: string) {
-    const { file } = this.options
+    const { file } = this.storage.options
     const ext = extname(fileName)
 
     if (file.generateRandomName) {
       return randomBytes(9).toString('hex') + ext
     }
 
-    const originalName = this.options.file.includeBaseName
+    const originalName = file.includeBaseName
       ? fileName.slice(0, fileName.lastIndexOf('.'))
       : ''
 
@@ -70,14 +66,6 @@ export class FileService implements FileStorage {
       : uniqueIdentifier
 
     return `${file.prefix}${baseName}${file.postfix}${ext}`
-  }
-
-  set options(value: IStorageOptions) {
-    this.storage.options = value
-  }
-
-  get bucket() {
-    return this.storage.bucket
   }
 }
 

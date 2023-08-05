@@ -1,6 +1,7 @@
+import { env } from '@configs/env.config'
 import { FileService } from '@core/file'
-import { LOCAL_STORAGE } from '@core/file/file.constants'
-import { LocalStorage } from '@core/file/storages/local.storage'
+import { S3_STORAGE } from '@core/file/file.constants'
+import { S3Storage } from '@core/file/storages/s3.storage'
 import { TokenModule, TokenService } from '@modules/token'
 import { Module } from '@nestjs/common'
 import { AuthController } from './auth.controller'
@@ -13,18 +14,23 @@ import { AuthService } from './auth.service'
     AuthService,
     TokenService,
     {
-      provide: LOCAL_STORAGE,
-      useFactory() {
-        return new FileService({
-          storage: new LocalStorage({
-            localFolder: 'public'
+      provide: S3_STORAGE,
+      useFactory: () =>
+        new FileService({
+          storage: new S3Storage({
+            credentials: {
+              accessKeyId: env.AWS_ACCESS_KEY_ID,
+              secretAccessKey: env.AWS_SECRET_ACCESS_KEY
+            }
           }),
           bucket: 'photos',
           file: {
-            generateRandomName: true
+            postfix: '/watahell',
+            prefix: 'brah/',
+            includeBaseName: true,
+            includeDate: false
           }
         })
-      }
     }
   ]
 })
