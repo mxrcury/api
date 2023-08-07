@@ -1,6 +1,7 @@
 import { cookieOptions } from '@configs'
 import { AsyncStorageService } from '@core/async-storage'
 import { Auth, Roles } from '@core/decorators'
+import { IFile } from '@libs/file-storage'
 import { Role } from '@modules/role'
 import {
   Body,
@@ -25,7 +26,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private asyncStorage: AsyncStorageService
-  ) {}
+  ) { }
 
   @Post('sign-up')
   signup(@Body() dto: SignUpDto) {
@@ -61,7 +62,7 @@ export class AuthController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Upload file to S3' })
-  upload(@UploadedFile() file: Express.Multer.File) {
+  upload(@UploadedFile() file: IFile) {
     return this.authService.uploadFile(file)
   }
 }

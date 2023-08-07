@@ -16,7 +16,7 @@ const envSchema = z.object({
 
   REFRESH_SECRET_KEY: z.string(),
   REFRESH_TOKEN_EXPIRES_IN: z.string(),
-  REFRESH_TOKEN_EXPIRES_IN_SEC:z.string().transform(stringToNumber),
+  REFRESH_TOKEN_EXPIRES_IN_SEC: z.string().transform(stringToNumber),
 
   // Client
   CLIENT_DOMAIN: z.string(),
@@ -35,7 +35,10 @@ const envSchema = z.object({
   // AWS
   AWS_BUCKET_NAME: z.string(),
   AWS_ACCESS_KEY_ID: z.string(),
-  AWS_SECRET_ACCESS_KEY: z.string()
+  AWS_SECRET_ACCESS_KEY: z.string(),
+
+  // Firebase
+  FIREBASE_BUCKET_NAME: z.string()
 })
 
 export const env = parseEnvs<typeof envSchema>(envSchema)

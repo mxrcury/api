@@ -4,9 +4,8 @@ import { PrismaService } from '@libs/prisma'
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 
 import { CacheService } from '@core/cache'
-import { FileService } from '@core/file'
-import { LOCAL_STORAGE } from '@core/file/file.constants'
 import { MailService } from '@core/mail'
+import { FIREBASE_STORAGE, FileService, IFile, LOCAL_STORAGE, S3_STORAGE } from "@libs/file-storage"
 import { TokenService } from '@modules/token/token.service'
 import {
   ConfirmationCodePayload,
@@ -24,8 +23,11 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly mailService: MailService,
     private readonly cacheStorage: CacheService,
-    @Inject(LOCAL_STORAGE) private readonly fileService: FileService
-  ) {}
+
+    @Inject(S3_STORAGE) private readonly fileService: FileService,
+    @Inject(LOCAL_STORAGE) private readonly localFileService: FileService,
+    @Inject(FIREBASE_STORAGE) private readonly firebaseFileService: FileService
+  ) { }
 
   async signUp(dto: SignUpDto) {
     const { email, name, password, token, confirmationCode } = dto
@@ -123,17 +125,6 @@ export class AuthService {
       throw new BadRequestException('You have entered wrong password')
     }
 
-    const areExistingTokens = await this.prismaService.tokens.findFirst({
-      where: { userId: isExistingUser.id }
-    })
-
-    if (areExistingTokens) {
-      return {
-        accessToken: areExistingTokens.accessToken,
-        refreshToken: areExistingTokens.refreshToken
-      }
-    }
-
     return this.tokenService.generateTokens({
       id: isExistingUser.id,
       role: isExistingUser.roleName
@@ -159,10 +150,9 @@ export class AuthService {
       subject: 'Invite for authorization',
       text: `You have been invited to the Mavy server as ${role}`,
       html: `<div>
-        <p><b>You have been invited to the Mavy server as ${role}</b></p> 
-        <p>Use this token for invitation <input value="${token}" disabled="disabled" maxlength="${
-        token.length + 6
-      }" size="${token.length + 6}" /></p>
+        <p><b>You have been invited to the Mavy server as ${role}</b></p>
+        <p>Use this token for invitation <input value="${token}" disabled="disabled" maxlength="${token.length + 6
+        }" size="${token.length + 6}" /></p>
         </div>`
     })
   }
@@ -177,7 +167,9 @@ export class AuthService {
     })
   }
 
-  async uploadFile(file: Express.Multer.File) {
+  async uploadFile(file: IFile) {
+    await this.firebaseFileService.save(file)
+    await this.localFileService.save(file)
     return await this.fileService.save(file)
   }
 }

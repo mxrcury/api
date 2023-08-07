@@ -1,12 +1,18 @@
 import { env } from '@configs/env.config'
-import { FileService } from '@core/file'
-import { S3_STORAGE } from '@core/file/file.constants'
-import { S3Storage } from '@core/file/storages/s3.storage'
+import { firebaseConfig } from '@configs/firebase.config'
+import {
+  FIREBASE_STORAGE,
+  FileService,
+  FirebaseStorage,
+  LOCAL_STORAGE,
+  LocalStorage,
+  S3Storage,
+  S3_STORAGE
+} from "@libs/file-storage"
 import { TokenModule, TokenService } from '@modules/token'
 import { Module } from '@nestjs/common'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
-
 @Module({
   imports: [TokenModule],
   controllers: [AuthController],
@@ -23,15 +29,23 @@ import { AuthService } from './auth.service'
               secretAccessKey: env.AWS_SECRET_ACCESS_KEY
             }
           }),
-          bucket: 'photos',
-          file: {
-            postfix: '/watahell',
-            prefix: 'brah/',
-            includeBaseName: true,
-            includeDate: false
-          }
+          bucket: env.AWS_BUCKET_NAME
         })
+    },
+    {
+      provide: LOCAL_STORAGE,
+      useFactory: () => new FileService({
+        storage: new LocalStorage({ localFolder: 'public' }),
+        bucket: 'local-files'
+      })
+    },
+    {
+      provide: FIREBASE_STORAGE,
+      useFactory: () => new FileService({
+        storage: new FirebaseStorage(firebaseConfig),
+        bucket: env.FIREBASE_BUCKET_NAME
+      })
     }
   ]
 })
-export class AuthModule {}
+export class AuthModule { }

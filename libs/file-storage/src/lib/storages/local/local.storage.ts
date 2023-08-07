@@ -1,19 +1,24 @@
 import fs from 'fs/promises'
 import path from 'path'
 
-import { SETTER_BUCKET_WRONG_VALUE } from '../file.constants'
-import {
-  FileStorage,
-  ILocalStorageOptions,
-  IStorageOptions
-} from '../file.interface'
+import { SETTER_BUCKET_WRONG_VALUE } from './local.constants'
+import { IFile, ILocalStorageOptions } from './local.types'
 
-export class LocalStorage implements FileStorage {
+export class LocalStorage {
   constructor(options: ILocalStorageOptions) {
     this.localStorageOptions = options
+    this.initializeLocalFolder()
   }
 
-  async save(file: Express.Multer.File) {
+  async initializeLocalFolder() {
+    const isExistingLocalFolder = await this.checkDirExistence(path.resolve(this.localStorageOptions.localFolder))
+    if (!isExistingLocalFolder) await fs.mkdir(path.resolve(this.localStorageOptions.localFolder))
+
+    const isExistingBucket = await this.checkDirExistence(path.resolve(this.localStorageOptions.localFolder, this.bucket))
+    if (!isExistingBucket) await fs.mkdir(path.resolve(this.localStorageOptions.localFolder, this.bucket))
+  }
+
+  async save(file: IFile) {
     const filePath = path.resolve(
       this.localStorageOptions.localFolder,
       this.bucket,
@@ -36,16 +41,21 @@ export class LocalStorage implements FileStorage {
     return { success: true }
   }
 
+  private async checkDirExistence(path: string) {
+    try {
+      await fs.access(path)
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+
   get localStorageOptions() {
     return this.$localStorageOptions
   }
 
   set localStorageOptions(value: ILocalStorageOptions) {
     this.$localStorageOptions = value
-  }
-
-  set options(value: IStorageOptions) {
-    this.$options = value
   }
 
   get bucket() {
@@ -60,7 +70,6 @@ export class LocalStorage implements FileStorage {
     throw new Error(SETTER_BUCKET_WRONG_VALUE)
   }
 
-  private $options: IStorageOptions
   private $bucket: string
 
   private $localStorageOptions: ILocalStorageOptions

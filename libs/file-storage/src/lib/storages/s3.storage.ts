@@ -1,22 +1,19 @@
 import * as AWS from 'aws-sdk'
 
 import { SETTER_BUCKET_WRONG_VALUE } from '../file.constants'
-import {
-  FileStorage,
-  IStorageOptions,
-  TS3StorageOptions
-} from '../file.interface'
+import { FileStorage, IFile, TS3StorageOptions } from '../file.interface'
 
 export class S3Storage implements FileStorage {
   private storage: AWS.S3
   constructor(options: TS3StorageOptions) {
     this.storage = new AWS.S3(options)
   }
+
   async delete(key: string) {
     await this.storage.deleteObject({ Bucket: this.bucket, Key: key }).promise()
     return { success: true }
   }
-  async save(file: Express.Multer.File) {
+  async save(file: IFile) {
     const response = await this.storage
       .upload({
         Bucket: this.bucket,
@@ -34,10 +31,6 @@ export class S3Storage implements FileStorage {
     return { url, success: true }
   }
 
-  set options(value: IStorageOptions) {
-    this.$options = value
-  }
-
   set bucket(value: string) {
     if (typeof value === 'string' && value.trim().length) {
       this.$bucket = value
@@ -49,7 +42,5 @@ export class S3Storage implements FileStorage {
   get bucket() {
     return this.$bucket
   }
-
-  private $options: IStorageOptions
   private $bucket: string
 }

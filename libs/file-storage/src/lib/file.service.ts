@@ -2,7 +2,7 @@ import { randomBytes } from 'crypto'
 import { extname } from 'path'
 import { FileStorage, IFile, IFileServiceOptions, IResponse, IStorageOptions } from './file.interface'
 
-export class FiljeService {
+export class FileService {
   private storage: FileStorage
 
   constructor({ storage, bucket, ...options }: IFileServiceOptions) {
@@ -10,6 +10,7 @@ export class FiljeService {
     this.storage.bucket = bucket
     this.options = options
   }
+
   async delete(key: string): Promise<IResponse> {
     try {
       return await this.storage.delete(key)
@@ -63,11 +64,11 @@ export class FiljeService {
       ? originalName + '_' + uniqueIdentifier
       : uniqueIdentifier
 
-    return `${file.prefix}${baseName}${file.postfix}${ext}`
+    return `${file.prefix || ''}${baseName}${file.postfix || ''}${ext}`
   }
 
   set options(value: IStorageOptions) {
-    const baseOptions = { file: { generateRandomName: false, includeBaseName: true, includeDate: true, postfix: '', prefix: '' } }
+    const baseOptions = { file: { generateRandomName: false, includeBaseName: true, includeDate: true } }
     this.$options = { ...baseOptions, ...value }
   }
 
