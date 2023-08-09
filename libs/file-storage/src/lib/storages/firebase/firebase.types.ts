@@ -1,9 +1,5 @@
-import { AppOptions, storage as firebaseStorage } from "firebase-admin";
+// import { AppOptions } from "firebase-admin";
 import { Readable } from "stream";
-
-const storage = firebaseStorage().bucket
-
-export type Storage = ReturnType<typeof storage>
 
 export interface IFile {
     fieldname: string;
@@ -18,4 +14,4 @@ export interface IFile {
     buffer: Buffer;
 }
 
-export type TFirebaseStorageOptions = AppOptions
+export interface IFirebaseStorageOptions { clientEmail: string, privateKey: string, projectId: string }

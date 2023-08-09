@@ -1,23 +1,24 @@
-import { storage as firebaseStorage, initializeApp } from 'firebase-admin';
+import { credential, storage as firebaseStorage } from 'firebase-admin';
+import { initializeApp } from 'firebase-admin/app';
 
 import {
-  FileStorage,
-  IStorageOptions,
+  IStorageOptions
 } from '../../file.interface';
 import { IFile } from '../s3/s3.types';
 import { SETTER_BUCKET_WRONG_VALUE } from './firebase.constants';
-import { Storage, TFirebaseStorageOptions } from './firebase.types';
+import { IFirebaseStorageOptions } from './firebase.types';
 
-export class FirebaseStorage implements FileStorage {
-  private storage: Storage
+export class FirebaseStorage {
+  private storage
 
-  constructor(options: TFirebaseStorageOptions) {
-    initializeApp({ ...options, storageBucket: this.bucket });
-
-    this.storage = firebaseStorage().bucket()
+  constructor(options: IFirebaseStorageOptions) {
+    const { clientEmail, privateKey, projectId } = options
+    initializeApp({ credential: credential.cert({ clientEmail, privateKey, projectId }) })
   }
 
   async delete(key: string) {
+    if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
+
     await this.storage.file(key).delete({ ignoreNotFound: true })
 
     return {
@@ -26,8 +27,9 @@ export class FirebaseStorage implements FileStorage {
   }
 
   async save(file: IFile) {
-    await this.storage.file(file.originalname).save(file.buffer, { gzip: true, contentType: file.mimetype })
+    if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
 
+    await this.storage.file(file.originalname).save(file.buffer, { gzip: true, contentType: file.mimetype })
     const url = await this.storage.file(file.originalname).getSignedUrl({ expires: '03-09-2491', action: 'read' })
 
     return {

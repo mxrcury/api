@@ -1,1 +1,0 @@
-// implementation for Azure storage

@@ -5,7 +5,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 
 import { CacheService } from '@core/cache'
 import { MailService } from '@core/mail'
-import { FIREBASE_STORAGE, FileService, IFile, LOCAL_STORAGE, S3_STORAGE } from "@libs/file-storage"
+import { AZURE_STORAGE, AzureStorage, FIREBASE_STORAGE, FileService, IFile, LOCAL_STORAGE, S3_STORAGE } from "@libs/file-storage"
 import { TokenService } from '@modules/token/token.service'
 import {
   ConfirmationCodePayload,
@@ -26,7 +26,8 @@ export class AuthService {
 
     @Inject(S3_STORAGE) private readonly fileService: FileService,
     @Inject(LOCAL_STORAGE) private readonly localFileService: FileService,
-    @Inject(FIREBASE_STORAGE) private readonly firebaseFileService: FileService
+    @Inject(FIREBASE_STORAGE) private readonly firebaseFileService: FileService,
+    @Inject(AZURE_STORAGE) private readonly azureFileService: AzureStorage
   ) { }
 
   async signUp(dto: SignUpDto) {
@@ -168,8 +169,28 @@ export class AuthService {
   }
 
   async uploadFile(file: IFile) {
-    await this.firebaseFileService.save(file)
-    await this.localFileService.save(file)
-    return await this.fileService.save(file)
+    const startFirebase = performance.now()
+    const firebase = await this.firebaseFileService.save(file)
+    const endFirebase = performance.now()
+    console.log('FIREBASE: %d', ((endFirebase - startFirebase) / 1000).toFixed(4))
+    const startLocal = performance.now()
+    const local = await this.localFileService.save(file)
+    const endLocal = performance.now()
+    console.log('LOCAL: %d', ((endLocal - startLocal) / 1000).toFixed(4))
+    const startS3 = performance.now()
+    const s3 = await this.fileService.save(file)
+    const endS3 = performance.now()
+    console.log('S3: %d', ((endS3 - startS3) / 1000).toFixed(4));
+    const startAzure = performance.now()
+    const azure = await this.azureFileService.save(file)
+    const endAzure = performance.now()
+    console.log('AZURE: %d', ((endAzure - startAzure) / 1000).toFixed(4))
+
+    return {
+      s3,
+      local,
+      firebase,
+      azure
+    }
   }
 }

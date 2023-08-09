@@ -1,6 +1,8 @@
 import { env } from '@configs/env.config'
-import { firebaseConfig } from '@configs/firebase.config'
+import { azureConfig, firebaseConfig, localStorageConfig, s3Config } from '@configs/storages.config'
 import {
+  AZURE_STORAGE,
+  AzureStorage,
   FIREBASE_STORAGE,
   FileService,
   FirebaseStorage,
@@ -13,6 +15,7 @@ import { TokenModule, TokenService } from '@modules/token'
 import { Module } from '@nestjs/common'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
+
 @Module({
   imports: [TokenModule],
   controllers: [AuthController],
@@ -23,27 +26,30 @@ import { AuthService } from './auth.service'
       provide: S3_STORAGE,
       useFactory: () =>
         new FileService({
-          storage: new S3Storage({
-            credentials: {
-              accessKeyId: env.AWS_ACCESS_KEY_ID,
-              secretAccessKey: env.AWS_SECRET_ACCESS_KEY
-            }
-          }),
+          storage: new S3Storage(s3Config),
+          naming: { date: false },
           bucket: env.AWS_BUCKET_NAME
         })
     },
     {
       provide: LOCAL_STORAGE,
       useFactory: () => new FileService({
-        storage: new LocalStorage({ localFolder: 'public' }),
+        storage: new LocalStorage(localStorageConfig),
         bucket: 'local-files'
       })
     },
     {
       provide: FIREBASE_STORAGE,
       useFactory: () => new FileService({
+        bucket: env.FIREBASE_BUCKET_NAME,
         storage: new FirebaseStorage(firebaseConfig),
-        bucket: env.FIREBASE_BUCKET_NAME
+        naming: { random: true },
+      })
+    },
+    {
+      provide: AZURE_STORAGE,
+      useFactory: () => new FileService({
+        bucket: env.AZURE_BUCKET_NAME, storage: new AzureStorage(azureConfig)
       })
     }
   ]

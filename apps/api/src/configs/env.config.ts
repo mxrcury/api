@@ -38,7 +38,13 @@ const envSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string(),
 
   // Firebase
-  FIREBASE_BUCKET_NAME: z.string()
+  FIREBASE_BUCKET_NAME: z.string(),
+
+  // Azure
+  AZURE_ACCOUNT_NAME: z.string(),
+  AZURE_ACCOUNT_KEY: z.string(),
+  AZURE_STORAGE_ACCOUNT_NAME: z.string(),
+  AZURE_BUCKET_NAME: z.string()
 })
 
 export const env = parseEnvs<typeof envSchema>(envSchema)

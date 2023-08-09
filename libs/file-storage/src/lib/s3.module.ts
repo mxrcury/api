@@ -1,40 +1,29 @@
 // import {
-//   DynamicModule,
-//   MiddlewareConsumer,
-//   Module,
-//   NestModule
+//     DynamicModule,
+//     Module
 // } from '@nestjs/common'
 // import { S3_STORAGE } from './file.constants'
 // import { TS3StorageOptions } from './file.interface'
-// import { FileService } from './file.service'
-// import { S3Storage } from './storages/s3.storage'
 
 // interface IS3ModuleOptions extends DynamicModule {
-//   buckets: string[]
-//   options: TS3StorageOptions
+//     buckets: string[]
+//     options: TS3StorageOptions
 // }
 
 // @Module({})
-// export class S3Module implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     throw new Error('Method not implemented.')
-//   }
-//   static forRoot(options: IS3ModuleOptions) {
-//     const { buckets, options: s3Options, global } = options
-//     return {
-//       providers: buckets.map((bucket, i) => ({
-//         provide: `${S3_STORAGE}_${i}`,
-//         useFactory: () =>
-//           new FileService({
-//             storage: new S3Storage({ ...s3Options }),
-//             bucket
-//           })
-//       })),
-//       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//       // @ts-ignore
-//       module: new S3Module()
+// export class S3Module {
+//     static forRoot(options: IS3ModuleOptions): DynamicModule {
+//         const { buckets, options: s3Options, global } = options
+//         return {
+//             providers: buckets.map((bucket, i) => ({
+//                 provide: S3_STORAGE,
+//                 useValue: buckets.reduce(bucket => bucket)
+//             })),
+//             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//             // @ts-ignore
+//             module: S3Module
+//         }
 //     }
-//   }
 // }
 
 // // @Module({

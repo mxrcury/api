@@ -20,16 +20,22 @@ export interface IResponse {
 type TFileNamePatterns = string | number | Date
 
 export interface IStorageOptions {
-  fileLimit?: {
-    limit: number
-    perSeconds: number
+  limits?: {
+    uploadingLimit?: {
+      filesQty: number
+      perSec: number
+    }
+    extensions?: {
+      include?: string[]
+      exclude?: string[]
+    }
   }
-  file?: {
+  naming?: {
     prefix?: TFileNamePatterns
     postfix?: TFileNamePatterns
-    includeBaseName?: boolean
-    generateRandomName?: boolean
-    includeDate?: boolean // if false it will generate additionally some random characters to make file unique
+    baseName?: boolean
+    random?: boolean
+    date?: boolean // if false it will generate additionally some random characters to make file unique
   }
 }
 

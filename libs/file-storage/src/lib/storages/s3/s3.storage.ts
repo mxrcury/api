@@ -22,7 +22,7 @@ export class S3Storage {
         Bucket: this.bucket,
         Key: file.originalname,
         Body: file.buffer,
-        ContentType: file.mimetype
+        ContentType: file.mimetype,
       })
       .promise()
 

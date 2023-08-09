@@ -6,9 +6,9 @@ export class FileService {
   private storage: FileStorage
 
   constructor({ storage, bucket, ...options }: IFileServiceOptions) {
+    this.options = options
     this.storage = storage
     this.storage.bucket = bucket
-    this.options = options
   }
 
   async delete(key: string): Promise<IResponse> {
@@ -45,18 +45,18 @@ export class FileService {
   }
 
   private generateFileName(fileName: string) {
-    const { file } = this.options
+    const { naming } = this.options
     const ext = extname(fileName)
 
-    if (file.generateRandomName) {
+    if (naming.random) {
       return randomBytes(9).toString('hex') + ext
     }
 
-    const originalName = file.includeBaseName
+    const originalName = naming.baseName
       ? fileName.slice(0, fileName.lastIndexOf('.'))
       : ''
 
-    const uniqueIdentifier = file.includeDate
+    const uniqueIdentifier = naming.date
       ? Date.now()
       : randomBytes(9).toString('hex')
 
@@ -64,12 +64,12 @@ export class FileService {
       ? originalName + '_' + uniqueIdentifier
       : uniqueIdentifier
 
-    return `${file.prefix || ''}${baseName}${file.postfix || ''}${ext}`
+    return `${naming.prefix || ''}${baseName}${naming.postfix || ''}${ext}`
   }
 
   set options(value: IStorageOptions) {
-    const baseOptions = { file: { generateRandomName: false, includeBaseName: true, includeDate: true } }
-    this.$options = { ...baseOptions, ...value }
+    const baseNamingOptions = { generateRandomName: false, includeBaseName: true, includeDate: true }
+    this.$options = { ...value, naming: { ...baseNamingOptions, ...value.naming } }
   }
 
   get options() {

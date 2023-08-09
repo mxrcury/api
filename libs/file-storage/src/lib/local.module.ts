@@ -21,11 +21,3 @@ export class LocalStorageModule {
         }
     }
 }
-
-
-LocalStorageModule.forRoot({ buckets: [''], localFolder: 'public' })
-
-const r = ['avatars', 'photos', 'videos'].reduce((res, item) => {
-    res[item] = new FileService({ storage: new LocalStorage({ localFolder: 'public' }), bucket: item })
-    return res
-}, {})

@@ -4,7 +4,6 @@ export interface ILocalStorageOptions {
     localFolder: string
 }
 
-
 export interface IFile {
     fieldname: string;
     originalname: string;
