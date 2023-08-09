@@ -169,22 +169,10 @@ export class AuthService {
   }
 
   async uploadFile(file: IFile) {
-    const startFirebase = performance.now()
     const firebase = await this.firebaseFileService.save(file)
-    const endFirebase = performance.now()
-    console.log('FIREBASE: %d', ((endFirebase - startFirebase) / 1000).toFixed(4))
-    const startLocal = performance.now()
     const local = await this.localFileService.save(file)
-    const endLocal = performance.now()
-    console.log('LOCAL: %d', ((endLocal - startLocal) / 1000).toFixed(4))
-    const startS3 = performance.now()
     const s3 = await this.fileService.save(file)
-    const endS3 = performance.now()
-    console.log('S3: %d', ((endS3 - startS3) / 1000).toFixed(4));
-    const startAzure = performance.now()
     const azure = await this.azureFileService.save(file)
-    const endAzure = performance.now()
-    console.log('AZURE: %d', ((endAzure - startAzure) / 1000).toFixed(4))
 
     return {
       s3,
