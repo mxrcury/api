@@ -35,10 +35,6 @@ export class AzureStorage implements FileStorage {
             this.storage = this.serviceClient.getContainerClient(this.bucket)
             if (!this.storage.exists()) throw new Error(`Container "${this.bucket} does not exist"`)
         }
-        const response = await this.storage.deleteBlob(key)
-
-        console.log("DELETE response: ", response, '\n====\n')
-
         return {
             success: true
         }

@@ -30,7 +30,7 @@ export class FirebaseStorage {
     if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
 
     await this.storage.file(file.originalname).save(file.buffer, { gzip: true, contentType: file.mimetype })
-    const url = await this.storage.file(file.originalname).getSignedUrl({ expires: '03-09-2491', action: 'read' })
+    const url = await this.storage.file(file.originalname).getSignedUrl({ expires: '03-09-2491', action: 'read' }) // move expires and action to firebase additional options
 
     return {
       url: url[0],

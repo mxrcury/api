@@ -1,4 +1,3 @@
-// import { AppOptions } from "firebase-admin";
 import { Readable } from "stream";
 
 export interface IFile {

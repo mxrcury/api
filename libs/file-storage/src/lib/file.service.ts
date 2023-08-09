@@ -78,20 +78,3 @@ export class FileService {
 
   private $options: IStorageOptions
 }
-
-// const fileLimit = this.storage.options.fileLimit.limit
-// const perSeconds = this.options.fileLimit.perSeconds
-// const uploadedFiles = 22
-
-// if (fileLimit > uploadedFiles) {
-//   // ban user, change ofc
-//   const ban = (user: string, secs: number) => {
-//     console.log('Ban ->', user, 'Per ->', secs)
-//   }
-
-//   ban('jordan', perSeconds)
-
-//   return {
-//     success: false
-//   }
-// }

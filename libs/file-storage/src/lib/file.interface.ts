@@ -35,7 +35,7 @@ export interface IStorageOptions {
     postfix?: TFileNamePatterns
     baseName?: boolean
     random?: boolean
-    date?: boolean // if false it will generate additionally some random characters to make file unique
+    date?: boolean
   }
 }
 

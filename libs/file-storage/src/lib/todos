@@ -41,3 +41,56 @@
 // //   ]
 // // })
 // // export class TestModule {}
+
+
+
+// 
+
+
+
+// import { Module } from "@nestjs/common";
+// import { FileService } from "./file.service";
+// import { LocalStorage } from "./storages/local/local.storage";
+
+
+// @Module({
+//     providers: []
+// })
+// export class LocalStorageModule {
+//     static forRoot(args: { buckets: string[], localFolder: string }) {
+//         const { buckets = ['avatars', 'photos', 'videos'], localFolder = 'public' } = args
+
+//         return {
+//             providers: [{
+//                 provide: 'LOCAL_STORAGE_SERVICE',
+//                 useValue: buckets.reduce((res, item) => {
+//                     res[item] = new FileService({ storage: new LocalStorage({ localFolder: 'public' }), bucket: item })
+//                     return res as { [k: typeof item]: FileService }
+//                 }, {})
+//             }]
+//         }
+//     }
+// }
+
+
+// 
+
+
+
+
+// const fileLimit = this.storage.options.fileLimit.limit
+// const perSeconds = this.options.fileLimit.perSeconds
+// const uploadedFiles = 22
+
+// if (fileLimit > uploadedFiles) {
+//   // ban user, change ofc
+//   const ban = (user: string, secs: number) => {
+//     console.log('Ban ->', user, 'Per ->', secs)
+//   }
+
+//   ban('jordan', perSeconds)
+
+//   return {
+//     success: false
+//   }
+// }
