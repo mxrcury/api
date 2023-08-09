@@ -13,4 +13,12 @@ export interface IFile {
     buffer: Buffer;
 }
 
-export interface IFirebaseStorageOptions { clientEmail: string, privateKey: string, projectId: string }
+export interface IFirebaseStorageOptions {
+    clientEmail: string,
+    privateKey: string,
+    projectId: string,
+    expiration?: string,
+    action?: string,
+    ignoreNotFound?: boolean,
+    gzip?: boolean
+}

@@ -21,7 +21,12 @@ export class AzureStorage implements FileStorage {
             this.storage = this.serviceClient.getContainerClient(this.bucket)
             if (!this.storage.exists()) throw new Error(`Container "${this.bucket} does not exist"`)
         }
-        const response = await this.storage.uploadBlockBlob(file.originalname, file.buffer, file.size, { blobHTTPHeaders: { blobContentType: file.mimetype, blobContentEncoding: file.encoding } })
+        const response = await this.storage.uploadBlockBlob(file.originalname, file.buffer, file.size, {
+            blobHTTPHeaders: {
+                blobContentType: file.mimetype,
+                blobContentEncoding: file.encoding
+            }
+        })
 
         const url = response.blockBlobClient.url
 

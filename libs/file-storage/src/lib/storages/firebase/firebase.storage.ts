@@ -12,14 +12,15 @@ export class FirebaseStorage {
   private storage
 
   constructor(options: IFirebaseStorageOptions) {
-    const { clientEmail, privateKey, projectId } = options
+    const { clientEmail, privateKey, projectId, ...firebaseOptions } = options
     initializeApp({ credential: credential.cert({ clientEmail, privateKey, projectId }) })
+    this.$firebaseOptions = firebaseOptions
   }
 
   async delete(key: string) {
     if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
 
-    await this.storage.file(key).delete({ ignoreNotFound: true })
+    await this.storage.file(key).delete({ ignoreNotFound: this.$firebaseOptions.ignoreNotFound || true })
 
     return {
       success: true
@@ -30,7 +31,10 @@ export class FirebaseStorage {
     if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
 
     await this.storage.file(file.originalname).save(file.buffer, { gzip: true, contentType: file.mimetype })
-    const url = await this.storage.file(file.originalname).getSignedUrl({ expires: '03-09-2491', action: 'read' }) // move expires and action to firebase additional options
+    const url = await this.storage.file(file.originalname).getSignedUrl({
+      expires: this.$firebaseOptions.expiration || '03-09-2491',
+      action: this.$firebaseOptions.action || 'read'
+    })
 
     return {
       url: url[0],
@@ -54,6 +58,7 @@ export class FirebaseStorage {
     return this.$bucket
   }
 
+  private $firebaseOptions: Omit<IFirebaseStorageOptions, 'clientEmail' | 'privateKey' | 'projectId'>
   private $options: IStorageOptions
   private $bucket: string
 }
