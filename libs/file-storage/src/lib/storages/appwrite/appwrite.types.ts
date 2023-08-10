@@ -1,11 +1,5 @@
 import { Readable } from "stream";
 
-export interface IAzureStorageOptions {
-    accountName: string
-    accountKey: string
-    storageAccountName: string
-}
-
 export interface IFile {
     fieldname: string;
     originalname: string;
@@ -17,4 +11,10 @@ export interface IFile {
     filename: string;
     path: string;
     buffer: Buffer;
+}
+
+export interface IAppWriteStorageOptions {
+    endpoint: string
+    projectId: string
+    apiKey: string
 }

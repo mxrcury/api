@@ -28,7 +28,7 @@ export interface IStorageOptions {
     extensions?: {
       include?: string[]
       exclude?: string[]
-    }
+    } | '*'
   }
   naming?: {
     prefix?: TFileNamePatterns

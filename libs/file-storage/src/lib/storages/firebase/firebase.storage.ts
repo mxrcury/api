@@ -1,3 +1,4 @@
+import { Bucket } from '@google-cloud/storage';
 import { credential, storage as firebaseStorage } from 'firebase-admin';
 import { initializeApp } from 'firebase-admin/app';
 
@@ -9,7 +10,7 @@ import { SETTER_BUCKET_WRONG_VALUE } from './firebase.constants';
 import { IFirebaseStorageOptions } from './firebase.types';
 
 export class FirebaseStorage {
-  private storage
+  private storage: Bucket
 
   constructor(options: IFirebaseStorageOptions) {
     const { clientEmail, privateKey, projectId, ...firebaseOptions } = options
@@ -30,7 +31,7 @@ export class FirebaseStorage {
   async save(file: IFile) {
     if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
 
-    await this.storage.file(file.originalname).save(file.buffer, { gzip: true, contentType: file.mimetype })
+    await this.storage.file(file.originalname).save(file.buffer, { gzip: this.$firebaseOptions.gzip || true, contentType: file.mimetype })
     const url = await this.storage.file(file.originalname).getSignedUrl({
       expires: this.$firebaseOptions.expiration || '03-09-2491',
       action: this.$firebaseOptions.action || 'read'

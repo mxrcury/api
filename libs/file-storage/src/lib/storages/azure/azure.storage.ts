@@ -1,10 +1,9 @@
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 
-import { FileStorage, IFile } from "../../file.interface";
-import { IAzureStorageOptions } from "./azure.types";
+import { IAzureStorageOptions, IFile } from "./azure.types";
 
 
-export class AzureStorage implements FileStorage {
+export class AzureStorage {
     private storage: ContainerClient
 
     public serviceClient: BlobServiceClient

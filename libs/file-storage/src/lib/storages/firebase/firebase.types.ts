@@ -18,7 +18,7 @@ export interface IFirebaseStorageOptions {
     privateKey: string,
     projectId: string,
     expiration?: string,
-    action?: string,
+    action?: 'read' | 'write' | 'delete' | 'resumable',
     ignoreNotFound?: boolean,
     gzip?: boolean
 }

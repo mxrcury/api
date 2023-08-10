@@ -5,7 +5,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 
 import { CacheService } from '@core/cache'
 import { MailService } from '@core/mail'
-import { AZURE_STORAGE, AzureStorage, FIREBASE_STORAGE, FileService, IFile, LOCAL_STORAGE, S3_STORAGE } from "@libs/file-storage"
+import { APPWRITE_STORAGE, AZURE_STORAGE, FIREBASE_STORAGE, FileService, IFile, LOCAL_STORAGE, S3_STORAGE } from "@libs/file-storage"
 import { TokenService } from '@modules/token/token.service'
 import {
   ConfirmationCodePayload,
@@ -27,7 +27,8 @@ export class AuthService {
     @Inject(S3_STORAGE) private readonly fileService: FileService,
     @Inject(LOCAL_STORAGE) private readonly localFileService: FileService,
     @Inject(FIREBASE_STORAGE) private readonly firebaseFileService: FileService,
-    @Inject(AZURE_STORAGE) private readonly azureFileService: AzureStorage
+    @Inject(AZURE_STORAGE) private readonly azureFileService: FileService,
+    @Inject(APPWRITE_STORAGE) private readonly appwriteFileService: FileService,
   ) { }
 
   async signUp(dto: SignUpDto) {
@@ -169,16 +170,19 @@ export class AuthService {
   }
 
   async uploadFile(file: IFile) {
-    const firebase = await this.firebaseFileService.save(file)
-    const local = await this.localFileService.save(file)
-    const s3 = await this.fileService.save(file)
-    const azure = await this.azureFileService.save(file)
+    // const firebase = await this.firebaseFileService.save(file)
+    // const local = await this.localFileService.save(file)
+    // const s3 = await this.fileService.save(file)
+    // const azure = await this.azureFileService.save(file)
+    const appwrite = await this.appwriteFileService.save(file)
+    console.log('appwrite:', appwrite)
 
     return {
-      s3,
-      local,
-      firebase,
-      azure
+      'ok': 'ok'
+      // s3,
+      // local,
+      // firebase,
+      // azure
     }
   }
 }
