@@ -44,7 +44,18 @@ const envSchema = z.object({
   AZURE_ACCOUNT_NAME: z.string(),
   AZURE_ACCOUNT_KEY: z.string(),
   AZURE_STORAGE_ACCOUNT_NAME: z.string(),
-  AZURE_BUCKET_NAME: z.string()
+  AZURE_BUCKET_NAME: z.string(),
+
+  // Appwrite
+  APPWRITE_ENDPOINT: z.string(),
+  APPWRITE_PROJECT_ID: z.string(),
+  APPWRITE_API_KEY: z.string(),
+  APPWRITE_BUCKET_NAME: z.string(),
+
+  // Supabase
+  SUPABASE_BUCKET_NAME: z.string(),
+  SUPABASE_ENDPOINT: z.string(),
+  SUPABASE_API_KEY: z.string(),
 })
 
 export const env = parseEnvs<typeof envSchema>(envSchema)

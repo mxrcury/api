@@ -68,3 +68,4 @@ $ pnpm run start
 - Implement logger that sends every action on API to private telegram bot
 - Implement limiter of requests to API and banning
 - Create an client application for this API using Svelte
+- Showing preview of document files

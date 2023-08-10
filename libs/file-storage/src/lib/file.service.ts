@@ -18,14 +18,16 @@ export class FileService {
       if (error instanceof Error) {
         return {
           success: false,
-          errorMessage: error.message
+          error: {
+            message: error.message
+          }
         }
       }
     }
   }
-  async save(file: IFile): Promise<IResponse> {
+  async upload(file: IFile): Promise<IResponse> {
     try {
-      const { url } = await this.storage.save({
+      const { url } = await this.storage.upload({
         ...file,
         originalname: this.generateFileName(file.originalname)
       })
@@ -38,7 +40,9 @@ export class FileService {
       if (error instanceof Error) {
         return {
           success: false,
-          errorMessage: error.message
+          error: {
+            message: error.message
+          }
         }
       }
     }

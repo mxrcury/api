@@ -18,7 +18,7 @@ export class LocalStorage {
     if (!isExistingBucket) await fs.mkdir(path.resolve(this.localStorageOptions.localFolder, this.bucket))
   }
 
-  async save(file: IFile) {
+  async upload(file: IFile) {
     const filePath = path.resolve(
       this.localStorageOptions.localFolder,
       this.bucket,

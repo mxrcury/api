@@ -8,15 +8,12 @@ import { SETTER_BUCKET_WRONG_VALUE } from './s3.constants'
 
 export class S3Storage {
   private storage: AWS.S3
+
   constructor(options: TS3StorageOptions) {
     this.storage = new AWS.S3(options)
   }
 
-  async delete(key: string) {
-    await this.storage.deleteObject({ Bucket: this.bucket, Key: key }).promise()
-    return { success: true }
-  }
-  async save(file: IFile) {
+  async upload(file: IFile) {
     const response = await this.storage
       .upload({
         Bucket: this.bucket,
@@ -32,6 +29,11 @@ export class S3Storage {
     })
 
     return { url, success: true }
+  }
+
+  async delete(key: string) {
+    await this.storage.deleteObject({ Bucket: this.bucket, Key: key }).promise()
+    return { success: true }
   }
 
   set bucket(value: string) {

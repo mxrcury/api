@@ -5,7 +5,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 
 import { CacheService } from '@core/cache'
 import { MailService } from '@core/mail'
-import { APPWRITE_STORAGE, AZURE_STORAGE, FIREBASE_STORAGE, FileService, IFile, LOCAL_STORAGE, S3_STORAGE } from "@libs/file-storage"
+import { APPWRITE_STORAGE, AZURE_STORAGE, FIREBASE_STORAGE, FileService, IFile, LOCAL_STORAGE, S3_STORAGE, SUPABASE_STORAGE } from "@libs/file-storage"
 import { TokenService } from '@modules/token/token.service'
 import {
   ConfirmationCodePayload,
@@ -29,6 +29,7 @@ export class AuthService {
     @Inject(FIREBASE_STORAGE) private readonly firebaseFileService: FileService,
     @Inject(AZURE_STORAGE) private readonly azureFileService: FileService,
     @Inject(APPWRITE_STORAGE) private readonly appwriteFileService: FileService,
+    @Inject(SUPABASE_STORAGE) private readonly supabaseFileService: FileService
   ) { }
 
   async signUp(dto: SignUpDto) {
@@ -170,19 +171,19 @@ export class AuthService {
   }
 
   async uploadFile(file: IFile) {
-    // const firebase = await this.firebaseFileService.save(file)
-    // const local = await this.localFileService.save(file)
-    // const s3 = await this.fileService.save(file)
-    // const azure = await this.azureFileService.save(file)
-    const appwrite = await this.appwriteFileService.save(file)
-    console.log('appwrite:', appwrite)
+    // const firebase = this.firebaseFileService.upload(file)
+    // const local = this.localFileService.upload(file)
+    // const s3 = this.fileService.upload(file)
+    // const azure = this.azureFileService.upload(file)
+    // const appwrite = this.appwriteFileService.upload(file)
+    // const supabase = this.supabaseFileService.upload(file)
 
-    return {
-      'ok': 'ok'
-      // s3,
-      // local,
-      // firebase,
-      // azure
-    }
+    // const res2 = await Promise.all([firebase
+    //  , local, s3, azure, appwrite, supabase
+    // ])
+
+    const res = await this.supabaseFileService.delete('wallpp_1691674415348.png')
+
+    return res
   }
 }

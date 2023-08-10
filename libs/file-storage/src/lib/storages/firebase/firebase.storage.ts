@@ -3,13 +3,14 @@ import { credential, storage as firebaseStorage } from 'firebase-admin';
 import { initializeApp } from 'firebase-admin/app';
 
 import {
+  FileStorage,
   IStorageOptions
 } from '../../file.interface';
 import { IFile } from '../s3/s3.types';
 import { SETTER_BUCKET_WRONG_VALUE } from './firebase.constants';
 import { IFirebaseStorageOptions } from './firebase.types';
 
-export class FirebaseStorage {
+export class FirebaseStorage implements FileStorage {
   private storage: Bucket
 
   constructor(options: IFirebaseStorageOptions) {
@@ -20,15 +21,14 @@ export class FirebaseStorage {
 
   async delete(key: string) {
     if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
-
-    await this.storage.file(key).delete({ ignoreNotFound: this.$firebaseOptions.ignoreNotFound || true })
+    await this.storage.file(key).delete()
 
     return {
       success: true
     }
   }
 
-  async save(file: IFile) {
+  async upload(file: IFile) {
     if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
 
     await this.storage.file(file.originalname).save(file.buffer, { gzip: this.$firebaseOptions.gzip || true, contentType: file.mimetype })

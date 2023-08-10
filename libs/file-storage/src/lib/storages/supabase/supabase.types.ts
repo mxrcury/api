@@ -13,10 +13,7 @@ export interface IFile {
     buffer: Buffer;
 }
 
-export interface IAppWriteStorageOptions {
-    endpoint: string
-    projectId: string
+export interface ISupabaseStorageOptions {
+    projectUrl: string
     apiKey: string
 }
-
-export type TAppWriteOptions = Omit<IAppWriteStorageOptions, 'apiKey'>

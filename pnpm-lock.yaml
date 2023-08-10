@@ -32,6 +32,9 @@ dependencies:
   '@prisma/client':
     specifier: ^4.16.2
     version: 4.16.2(prisma@5.1.1)
+  '@supabase/storage-js':
+    specifier: ^2.5.1
+    version: 2.5.1
   appwrite:
     specifier: ^11.0.0
     version: 11.0.0
@@ -3100,6 +3103,14 @@ packages:
     dependencies:
       '@sinonjs/commons': 3.0.0
     dev: true
+
+  /@supabase/storage-js@2.5.1:
+    resolution: {integrity: sha512-nkR0fQA9ScAtIKA3vNoPEqbZv1k5B5HVRYEvRWdlP6mUpFphM9TwPL2jZ/ztNGMTG5xT6SrHr+H7Ykz8qzbhjw==}
+    dependencies:
+      cross-fetch: 3.1.5
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /@tootallnate/once@2.0.0:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}

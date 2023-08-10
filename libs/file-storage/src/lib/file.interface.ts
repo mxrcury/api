@@ -14,7 +14,9 @@ export interface IFile {
 export interface IResponse {
   url?: string
   success: boolean
-  errorMessage?: string
+  error?: {
+    message: string
+  }
 }
 
 type TFileNamePatterns = string | number | Date
@@ -38,6 +40,8 @@ export interface IStorageOptions {
     date?: boolean
     default?: boolean
   }
+  // url?: boolean
+  // TODO: add toggling url in response or if it will be only upload, cause in some storages it can take additional request and time
 }
 
 export interface IFileServiceOptions extends IStorageOptions {
@@ -46,8 +50,9 @@ export interface IFileServiceOptions extends IStorageOptions {
 }
 
 export abstract class FileStorage {
-  abstract save(file: IFile): Promise<IResponse>
+  abstract upload(file: IFile): Promise<IResponse>
   abstract delete(key: string): Promise<IResponse>
+  abstract getUrl?(key: string): Promise<string> // TODO: also implement it for url toggling
 
   abstract get bucket(): string
   abstract set bucket(value: string)

@@ -1,5 +1,6 @@
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 
+import { SETTER_BUCKET_WRONG_VALUE } from '../../file.constants';
 import { IAzureStorageOptions, IFile } from "./azure.types";
 
 
@@ -15,7 +16,7 @@ export class AzureStorage {
             sharedKeyCredential
         );
     }
-    async save(file: IFile) {
+    async upload(file: IFile) {
         if (!this.storage) {
             this.storage = this.serviceClient.getContainerClient(this.bucket)
             if (!this.storage.exists()) throw new Error(`Container "${this.bucket} does not exist"`)
@@ -39,6 +40,9 @@ export class AzureStorage {
             this.storage = this.serviceClient.getContainerClient(this.bucket)
             if (!this.storage.exists()) throw new Error(`Container "${this.bucket} does not exist"`)
         }
+
+        await this.storage.deleteBlob(key)
+
         return {
             success: true
         }
@@ -47,7 +51,11 @@ export class AzureStorage {
         return this.$bucket
     }
     set bucket(value: string) {
-        this.$bucket = value
+        if (typeof value === 'string' && value.trim().length) {
+            this.$bucket = value
+            return
+        }
+        throw new Error(SETTER_BUCKET_WRONG_VALUE)
     }
 
     set options(value: IAzureStorageOptions) {
