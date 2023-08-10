@@ -36,6 +36,7 @@ export interface IStorageOptions {
     baseName?: boolean
     random?: boolean
     date?: boolean
+    default?: boolean
   }
 }
 

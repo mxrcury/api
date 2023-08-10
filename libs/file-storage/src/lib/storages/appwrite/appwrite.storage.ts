@@ -1,32 +1,24 @@
-import { Client, Storage } from 'appwrite';
-import { InputFile } from 'node-appwrite';
+import { Client, InputFile, Storage } from 'node-appwrite';
 
 import { FileStorage } from "../../file.interface";
 import { IAppWriteStorageOptions, IFile } from './appwrite.types';
 
-interface File extends Blob {
-    readonly lastModified: number;
-    readonly name: string;
-    readonly webkitRelativePath: string;
-}
-
-
-
 export class AppWriteStorage implements FileStorage {
     private storage: Storage
     constructor(options: IAppWriteStorageOptions) {
-        const client = new Client().setEndpoint(options.endpoint).setProject(options.projectId).setJWT(options.apiKey)
+        const client = new Client().setEndpoint(options.endpoint).setProject(options.projectId).setKey(options.apiKey)
 
         this.storage = new Storage(client)
 
     }
     async save(file: IFile) {
-        // const file = InputFile.fromBuffer(file.buffer, file.originalname)
-        const response = await this.storage.createFile(this.bucket, file.originalname, InputFile.fromBuffer(file.buffer, file.filename) as File)
-        const url = ''
-        console.log(response)
+        const inputFile = InputFile.fromBuffer(file.buffer, file.originalname)
+        const response = await this.storage.createFile(this.bucket, file.originalname, inputFile)
+        const url = await this.storage.
+
+            console.log(url)
         return {
-            url,
+            url: '',
             success: true
         }
     }

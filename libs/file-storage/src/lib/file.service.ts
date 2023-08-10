@@ -46,6 +46,9 @@ export class FileService {
 
   private generateFileName(fileName: string) {
     const { naming } = this.options
+
+    if (naming.default) return fileName
+
     const ext = extname(fileName)
 
     if (naming.random) {
@@ -68,7 +71,7 @@ export class FileService {
   }
 
   set options(value: IStorageOptions) {
-    const baseNamingOptions = { generateRandomName: false, includeBaseName: true, includeDate: true }
+    const baseNamingOptions = { random: false, baseName: true, date: true }
     this.$options = { ...value, naming: { ...baseNamingOptions, ...value.naming } }
   }
 
