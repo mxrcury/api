@@ -19,9 +19,7 @@ export class SupabaseStorage {
         const response = await this.storage.from(this.bucket).upload(file.originalname, file.buffer, { contentType: file.mimetype })
         if (response.error) throw new Error(response.error.message)
 
-        const url = this.storage.from(this.bucket).getPublicUrl(response.data.path)
-
-        return { url: url.data.publicUrl, success: true }
+        return { key: response.data.path, success: true }
     }
 
     async delete(key: string) {
@@ -31,6 +29,11 @@ export class SupabaseStorage {
         return {
             success: true
         }
+    }
+
+    async getUrl(key: string) {
+        console.log(key)
+        return this.storage.from(this.bucket).getPublicUrl(key).data.publicUrl
     }
 
     get bucket(): string {

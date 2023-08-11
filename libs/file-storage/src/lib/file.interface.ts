@@ -13,6 +13,7 @@ export interface IFile {
 }
 export interface IResponse {
   url?: string
+  key?: string
   success: boolean
   error?: {
     message: string
@@ -27,7 +28,8 @@ export interface IStorageOptions {
       filesQty: number
       perSec: number
     }
-    extensions?: {
+    size?: number
+    extensions: {
       include?: string[]
       exclude?: string[]
     } | '*'
@@ -40,7 +42,10 @@ export interface IStorageOptions {
     date?: boolean
     default?: boolean
   }
-  // url?: boolean
+  include: {
+    url: boolean
+    key?: boolean
+  }
   // TODO: add toggling url in response or if it will be only upload, cause in some storages it can take additional request and time
 }
 

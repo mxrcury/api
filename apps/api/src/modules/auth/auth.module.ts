@@ -32,14 +32,20 @@ import { AuthService } from './auth.service'
         new FileService({
           storage: new S3Storage(s3Config),
           naming: { date: false },
-          bucket: env.AWS_BUCKET_NAME
+          bucket: env.AWS_BUCKET_NAME,
+          include: { url: false, key: true }
         })
     },
     {
       provide: LOCAL_STORAGE,
       useFactory: () => new FileService({
         storage: new LocalStorage(localStorageConfig),
-        bucket: 'local-files'
+        bucket: 'images',
+        include: { url: true, key: true },
+        naming: { random: true },
+        limits: {
+          extensions: '*'
+        }
       })
     },
     {
@@ -48,26 +54,31 @@ import { AuthService } from './auth.service'
         bucket: env.FIREBASE_BUCKET_NAME,
         storage: new FirebaseStorage(firebaseConfig),
         naming: { default: true },
+        include: { url: false, key: true }
       })
     },
     {
       provide: AZURE_STORAGE,
       useFactory: () => new FileService({
-        bucket: env.AZURE_BUCKET_NAME, storage: new AzureStorage(azureConfig)
+        bucket: env.AZURE_BUCKET_NAME, storage: new AzureStorage(azureConfig),
+        naming: { baseName: false, date: true },
+        include: { url: false, key: true }
       })
     },
     {
       provide: APPWRITE_STORAGE,
       useFactory: () => new FileService({
         storage: new AppWriteStorage(appWriteConfig),
-        bucket: env.APPWRITE_BUCKET_NAME
+        bucket: env.APPWRITE_BUCKET_NAME,
+        include: { url: true, key: true }
       })
     },
     {
       provide: SUPABASE_STORAGE,
       useFactory: () => new FileService({
         storage: new SupabaseStorage(supabaseConfig),
-        bucket: env.SUPABASE_BUCKET_NAME
+        bucket: env.SUPABASE_BUCKET_NAME,
+        include: { url: true, key: true }
       })
     }
   ]

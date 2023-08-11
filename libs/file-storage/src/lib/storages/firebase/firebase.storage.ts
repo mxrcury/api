@@ -30,17 +30,21 @@ export class FirebaseStorage implements FileStorage {
 
   async upload(file: IFile) {
     if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
-
     await this.storage.file(file.originalname).save(file.buffer, { gzip: this.$firebaseOptions.gzip || true, contentType: file.mimetype })
-    const url = await this.storage.file(file.originalname).getSignedUrl({
+
+    return {
+      key: file.originalname,
+      success: true
+    }
+  }
+
+  async getUrl(key: string) {
+    const url = await this.storage.file(key).getSignedUrl({
       expires: this.$firebaseOptions.expiration || '03-09-2491',
       action: this.$firebaseOptions.action || 'read'
     })
 
-    return {
-      url: url[0],
-      success: true
-    }
+    return url[0]
   }
 
   set options(value: IStorageOptions) {

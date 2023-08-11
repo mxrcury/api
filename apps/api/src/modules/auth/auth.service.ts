@@ -24,8 +24,8 @@ export class AuthService {
     private readonly mailService: MailService,
     private readonly cacheStorage: CacheService,
 
-    @Inject(S3_STORAGE) private readonly fileService: FileService,
     @Inject(LOCAL_STORAGE) private readonly localFileService: FileService,
+    @Inject(S3_STORAGE) private readonly fileService: FileService,
     @Inject(FIREBASE_STORAGE) private readonly firebaseFileService: FileService,
     @Inject(AZURE_STORAGE) private readonly azureFileService: FileService,
     @Inject(APPWRITE_STORAGE) private readonly appwriteFileService: FileService,
@@ -171,19 +171,19 @@ export class AuthService {
   }
 
   async uploadFile(file: IFile) {
-    // const firebase = this.firebaseFileService.upload(file)
-    // const local = this.localFileService.upload(file)
-    // const s3 = this.fileService.upload(file)
-    // const azure = this.azureFileService.upload(file)
-    // const appwrite = this.appwriteFileService.upload(file)
     // const supabase = this.supabaseFileService.upload(file)
-
+    // const azure = this.azureFileService.upload(file)
+    // const s3 = this.fileService.upload(file)
+    // const firebase = this.firebaseFileService.upload(file)
+    // const appwrite = this.appwriteFileService.upload(file)
+    console.time('local')
+    const local = this.localFileService.upload(file)
+    console.timeEnd('local')
     // const res2 = await Promise.all([firebase
     //  , local, s3, azure, appwrite, supabase
     // ])
 
-    const res = await this.supabaseFileService.delete('wallpp_1691674415348.png')
 
-    return res
+    return local
   }
 }

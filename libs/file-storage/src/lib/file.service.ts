@@ -27,14 +27,17 @@ export class FileService {
   }
   async upload(file: IFile): Promise<IResponse> {
     try {
-      const { url } = await this.storage.upload({
+      this.checkExtension(file.originalname)
+
+      const { key, url } = await this.storage.upload({
         ...file,
         originalname: this.generateFileName(file.originalname)
       })
 
       return {
-        url,
-        success: true
+        success: true,
+        ...(this.options.include.url && { url: url || await this.getFileUrl(key) }),
+        ...(this.options.include.key && { key })
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -48,10 +51,24 @@ export class FileService {
     }
   }
 
+  private checkExtension(fileName: string) {
+    if (this.options.limits?.extensions !== '*') {
+      const { exclude, include } = this.options.limits.extensions
+      const ext = extname(fileName)
+
+      if (exclude?.length && exclude.includes(ext)) throw new Error('File extension is not allowed')
+      if (include?.length && !include.includes(ext)) throw new Error('File extension is not allowed')
+    }
+  }
+
+  private async getFileUrl(key: string) {
+    return await this.storage.getUrl(key)
+  }
+
   private generateFileName(fileName: string) {
     const { naming } = this.options
 
-    if (naming.default) return fileName
+    if (naming.default && !naming.random) return fileName
 
     const ext = extname(fileName)
 
@@ -75,7 +92,7 @@ export class FileService {
   }
 
   set options(value: IStorageOptions) {
-    const baseNamingOptions = { random: false, baseName: true, date: true }
+    const baseNamingOptions = { random: false, baseName: false, date: false, default: true }
     this.$options = { ...value, naming: { ...baseNamingOptions, ...value.naming } }
   }
 

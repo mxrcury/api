@@ -23,17 +23,21 @@ export class S3Storage {
       })
       .promise()
 
-    const url = await this.storage.getSignedUrlPromise('getObject', {
-      Bucket: this.bucket,
-      Key: response.Key
-    })
-
-    return { url, success: true }
+    return { key: response.Key, success: true }
   }
 
   async delete(key: string) {
     await this.storage.deleteObject({ Bucket: this.bucket, Key: key }).promise()
     return { success: true }
+  }
+
+  async getUrl(key: string) {
+    const url = await this.storage.getSignedUrlPromise('getObject', {
+      Bucket: this.bucket,
+      Key: key
+    })
+
+    return url
   }
 
   set bucket(value: string) {

@@ -27,7 +27,7 @@ export class LocalStorage {
 
     await fs.writeFile(filePath, file.buffer)
 
-    return { url: filePath, success: true }
+    return { key: file.originalname, success: true }
   }
   async delete(key: string) {
     const filePath = path.resolve(
@@ -39,6 +39,16 @@ export class LocalStorage {
     await fs.rm(filePath)
 
     return { success: true }
+  }
+
+  async getUrl(key: string) {
+    const url = path.resolve(
+      this.localStorageOptions.localFolder,
+      this.bucket,
+      key
+    )
+
+    return url
   }
 
   private async checkDirExistence(path: string) {

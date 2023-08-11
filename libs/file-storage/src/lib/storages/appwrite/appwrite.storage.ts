@@ -14,14 +14,16 @@ export class AppWriteStorage implements FileStorage {
         this.storage = new Storage(this.client)
         this.options = appwriteOptions
     }
+    async getUrl(key: string): Promise<string> {
+        const url = `${this.options.endpoint}/storage/buckets/${this.bucket}/files/${key}/view?project=${this.options.projectId}&mode=admin`
+
+        return url
+    }
     async upload(file: IFile) {
         const inputFile = InputFile.fromBuffer(file.buffer, file.originalname)
         const response = await this.storage.createFile(this.bucket, file.originalname, inputFile)
-
-        const url = `${this.options.endpoint}/storage/buckets/${this.bucket}/files/${response.$id}/view?project=${this.options.projectId}&mode=admin`
-
         return {
-            url,
+            key: response.$id,
             success: true
         }
     }
