@@ -28,7 +28,7 @@ export interface IStorageOptions {
       filesQty: number
       perSec: number
     }
-    size?: number
+    size?: number // in kilobytes
     extensions: {
       include?: string[]
       exclude?: string[]

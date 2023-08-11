@@ -11,23 +11,13 @@ export class FileService {
     this.storage.bucket = bucket
   }
 
-  async delete(key: string): Promise<IResponse> {
-    try {
-      return await this.storage.delete(key)
-    } catch (error) {
-      if (error instanceof Error) {
-        return {
-          success: false,
-          error: {
-            message: error.message
-          }
-        }
-      }
-    }
-  }
   async upload(file: IFile): Promise<IResponse> {
     try {
-      this.checkExtension(file.originalname)
+      if (this.options.limits?.extensions !== '*') this.validateExtension(file.originalname)
+      console.log(this.options.limits);
+      console.log(file);
+      if (this.options.limits?.size) this.validateSize(file.size)
+
 
       const { key, url } = await this.storage.upload({
         ...file,
@@ -51,14 +41,35 @@ export class FileService {
     }
   }
 
-  private checkExtension(fileName: string) {
-    if (this.options.limits?.extensions !== '*') {
-      const { exclude, include } = this.options.limits.extensions
-      const ext = extname(fileName)
-
-      if (exclude?.length && exclude.includes(ext)) throw new Error('File extension is not allowed')
-      if (include?.length && !include.includes(ext)) throw new Error('File extension is not allowed')
+  async delete(key: string): Promise<IResponse> {
+    try {
+      return await this.storage.delete(key)
+    } catch (error) {
+      if (error instanceof Error) {
+        return {
+          success: false,
+          error: {
+            message: error.message
+          }
+        }
+      }
     }
+  }
+
+  private validateExtension(fileName: string) {
+    if (this.options.limits?.extensions === '*') return
+    const { exclude, include } = this.options.limits.extensions
+    const ext = extname(fileName)
+
+    if (exclude?.length && exclude.includes(ext)) throw new Error('File extension is not allowed')
+    if (include?.length && !include.includes(ext)) throw new Error('File extension is not allowed')
+
+  }
+
+  private validateSize(fileSize: number) {
+    const { size } = this.options.limits // TODO: change to min and max size, now it's only max size
+
+    if (fileSize > size * 1000) throw new Error('File size is too big')
   }
 
   private async getFileUrl(key: string) {
