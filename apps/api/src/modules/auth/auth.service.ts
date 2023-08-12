@@ -4,8 +4,10 @@ import { PrismaService } from '@libs/prisma'
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 
 import { CacheService } from '@core/cache'
+import { InjectGzipCompression } from '@core/file-compressor/compressor.decorator'
+import { FileCompressor } from '@core/file-compressor/compressor.service'
 import { MailService } from '@core/mail'
-import { APPWRITE_STORAGE, AZURE_STORAGE, FIREBASE_STORAGE, FileService, IFile, LOCAL_STORAGE, S3_STORAGE, SUPABASE_STORAGE } from "@libs/file-storage"
+import { FileService, IFile, SUPABASE_STORAGE } from "@libs/file-storage"
 import { TokenService } from '@modules/token/token.service'
 import {
   ConfirmationCodePayload,
@@ -24,12 +26,8 @@ export class AuthService {
     private readonly mailService: MailService,
     private readonly cacheStorage: CacheService,
 
-    @Inject(LOCAL_STORAGE) private readonly localFileService: FileService,
-    @Inject(S3_STORAGE) private readonly fileService: FileService,
-    @Inject(FIREBASE_STORAGE) private readonly firebaseFileService: FileService,
-    @Inject(AZURE_STORAGE) private readonly azureFileService: FileService,
-    @Inject(APPWRITE_STORAGE) private readonly appwriteFileService: FileService,
-    @Inject(SUPABASE_STORAGE) private readonly supabaseFileService: FileService
+    @Inject(SUPABASE_STORAGE) private readonly fileService: FileService,
+    @InjectGzipCompression() private readonly gzipCompressorService: FileCompressor
   ) { }
 
   async signUp(dto: SignUpDto) {
@@ -171,18 +169,7 @@ export class AuthService {
   }
 
   async uploadFile(file: IFile) {
-    // const supabase = this.supabaseFileService.upload(file)
-    // const azure = this.azureFileService.upload(file)
-    // const s3 = this.fileService.upload(file)
-    // const firebase = this.firebaseFileService.upload(file)
-    // const appwrite = this.appwriteFileService.upload(file)
-    const local = this.localFileService.upload(file)
-    // const s3 = this.fileService.options
-    // const res2 = await Promise.all([firebase
-    //  , local, s3, azure, appwrite, supabase
-    // ])
-
-
-    return local
+    Object.assign(file, await this.gzipCompressorService.compress(file))
+    return this.fileService.upload(file)
   }
 }
