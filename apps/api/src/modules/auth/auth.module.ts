@@ -44,7 +44,12 @@ import { AuthService } from './auth.service'
         include: { url: true, key: true },
         naming: { random: true },
         limits: {
-          extensions: '*'
+          extensions: '*',
+          size: 200,
+          uploadingLimit: {
+            filesQty: 10,
+            perSec: 60
+          }
         }
       })
     },

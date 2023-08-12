@@ -3,12 +3,12 @@ import { extname } from 'path'
 import { FileStorage, IFile, IFileServiceOptions, IResponse, IStorageOptions } from './file.interface'
 
 export class FileService {
-  private storage: FileStorage
+  private $storage: FileStorage
 
   constructor({ storage, bucket, ...options }: IFileServiceOptions) {
     this.options = options
-    this.storage = storage
-    this.storage.bucket = bucket
+    this.$storage = storage
+    this.$storage.bucket = bucket
   }
 
   async upload(file: IFile): Promise<IResponse> {
@@ -19,7 +19,7 @@ export class FileService {
       if (this.options.limits?.size) this.validateSize(file.size)
 
 
-      const { key, url } = await this.storage.upload({
+      const { key, url } = await this.$storage.upload({
         ...file,
         originalname: this.generateFileName(file.originalname)
       })
@@ -43,7 +43,7 @@ export class FileService {
 
   async delete(key: string): Promise<IResponse> {
     try {
-      return await this.storage.delete(key)
+      return await this.$storage.delete(key)
     } catch (error) {
       if (error instanceof Error) {
         return {
@@ -73,7 +73,7 @@ export class FileService {
   }
 
   private async getFileUrl(key: string) {
-    return await this.storage.getUrl(key)
+    return await this.$storage.getUrl(key)
   }
 
   private generateFileName(fileName: string) {

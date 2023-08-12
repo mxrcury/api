@@ -7,7 +7,9 @@ import {
   Body,
   Controller,
   Get,
+  Ip,
   Post,
+  Req,
   Res,
   UploadedFile,
   UseInterceptors
@@ -62,7 +64,8 @@ export class AuthController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Upload file to S3' })
-  upload(@UploadedFile() file: IFile) {
+  upload(@UploadedFile() file: IFile, @Ip() ip: string, @Req() req: any) {
+    console.log('Upload file to S3', file, ip, req)
     return this.authService.uploadFile(file)
   }
 }
