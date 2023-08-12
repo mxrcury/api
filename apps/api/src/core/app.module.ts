@@ -11,6 +11,9 @@ import { MailModule } from '@core/mail'
 import { SwaggerModule } from '@core/swagger'
 
 import { PrismaModule } from '@libs/prisma'
+import { ScheduleModule } from '@nestjs/schedule'
+import { CronModule } from './cron'
+import { CompressorModule } from './file-compressor/compressor.module'
 
 @Module({
   imports: [
@@ -22,9 +25,10 @@ import { PrismaModule } from '@libs/prisma'
     RoleModule,
     CacheModule,
     AsyncStorageModule,
-    // ScheduleModule.forRoot(),
-    // CronModule,
+    ScheduleModule.forRoot(),
+    CronModule,
     MailModule,
+    CompressorModule.forRoot()
   ]
 })
 export class AppModule { }

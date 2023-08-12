@@ -1,6 +1,5 @@
 import { env } from '@configs/env.config'
 import { supabaseConfig } from '@configs/storages.config'
-import { GzipCompressorService } from '@core/file-compressor/compressors'
 import {
   FileService,
   SUPABASE_STORAGE,
@@ -24,14 +23,11 @@ import { AuthService } from './auth.service'
         bucket: env.SUPABASE_BUCKET_NAME,
         include: { url: true, key: true },
         limits: {
-          extensions: {
-            include: ['.png']
-          }
+          extensions: '*'
         },
         naming: { random: true }
       })
-    },
-    GzipCompressorService
+    }
   ]
 })
 export class AuthModule { }
