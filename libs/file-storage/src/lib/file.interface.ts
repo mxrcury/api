@@ -24,11 +24,10 @@ type TFileNamePatterns = string | number | Date
 
 export interface IStorageOptions {
   limits?: {
-    uploadingLimit?: {
-      filesQty: number
-      perSec: number
-    }
-    size?: number // in kilobytes
+    size?: number | {
+      min: number
+      max: number
+    } // in kilobytes
     extensions: {
       include?: string[]
       exclude?: string[]

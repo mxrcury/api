@@ -176,10 +176,8 @@ export class AuthService {
     // const s3 = this.fileService.upload(file)
     // const firebase = this.firebaseFileService.upload(file)
     // const appwrite = this.appwriteFileService.upload(file)
-    console.time('local')
     const local = this.localFileService.upload(file)
     // const s3 = this.fileService.options
-    console.log('local')
     // const res2 = await Promise.all([firebase
     //  , local, s3, azure, appwrite, supabase
     // ])

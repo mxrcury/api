@@ -45,10 +45,9 @@ import { AuthService } from './auth.service'
         naming: { random: true },
         limits: {
           extensions: '*',
-          size: 200,
-          uploadingLimit: {
-            filesQty: 10,
-            perSec: 60
+          size: {
+            max: 1024 * 3,
+            min: 884
           }
         }
       })

@@ -1,15 +1,13 @@
-import { Logger } from '@nestjs/common'
+import { Storage } from "./memory-storage.interface";
 
-class MemoryStorage {
+export class MemoryStorage implements Storage {
   private _storage = new Map<string | number, unknown>()
 
-  private logger = new Logger()
-
   constructor() {
-    this.logger.log('Memory storage has been connected')
+    console.info('Memory storage has been connected')
   }
 
-  get<T>(key: string) {
+  get<T>(key: string): T {
     return this._storage.get(key) as T | undefined
   }
 
@@ -27,9 +25,16 @@ class MemoryStorage {
     return true
   }
 
+  update<T>(key: string, value: T): boolean {
+    const isExistingBucket = this._storage.has(key)
+
+    if (!isExistingBucket) return false
+
+    this._storage.delete(key)
+    this._storage.set(key, value)
+  }
+
   get storage() {
     return this._storage
   }
 }
-
-export const memoryStorage = new MemoryStorage()

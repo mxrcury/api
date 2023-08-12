@@ -14,10 +14,7 @@ export class FileService {
   async upload(file: IFile): Promise<IResponse> {
     try {
       if (this.options.limits?.extensions !== '*') this.validateExtension(file.originalname)
-      console.log(this.options.limits);
-      console.log(file);
       if (this.options.limits?.size) this.validateSize(file.size)
-
 
       const { key, url } = await this.$storage.upload({
         ...file,
@@ -63,13 +60,16 @@ export class FileService {
 
     if (exclude?.length && exclude.includes(ext)) throw new Error('File extension is not allowed')
     if (include?.length && !include.includes(ext)) throw new Error('File extension is not allowed')
-
   }
 
   private validateSize(fileSize: number) {
-    const { size } = this.options.limits // TODO: change to min and max size, now it's only max size
+    const { size } = this.options.limits
 
-    if (fileSize > size * 1000) throw new Error('File size is too big')
+    if (typeof size === 'number' && fileSize > size * 1000) throw new Error('File size is too big')
+    else if (typeof size === 'object') {
+      if (fileSize > size.max * 1000) throw new Error('File size is too big')
+      if (fileSize < size.min * 1000) throw new Error('File size is too small')
+    }
   }
 
   private async getFileUrl(key: string) {
