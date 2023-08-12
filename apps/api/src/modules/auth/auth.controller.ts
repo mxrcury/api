@@ -65,4 +65,18 @@ export class AuthController {
   upload(@UploadedFile() file: IFile) {
     return this.authService.uploadFile(file)
   }
+
+  @Post('compress-file')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Compress file' })
+  compress(@UploadedFile() file: IFile) {
+    return this.authService.compressFile(file)
+  }
+
+  @Post('decompress-file')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Decompress file' })
+  decompress(@UploadedFile() file: IFile) {
+    return this.authService.decompressFile(file)
+  }
 }

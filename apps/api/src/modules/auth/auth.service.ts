@@ -1,14 +1,13 @@
+import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 import { compare, genSalt, hash } from 'bcrypt'
 
-import { PrismaService } from '@libs/prisma'
-import { BadRequestException, Inject, Injectable } from '@nestjs/common'
-
 import { CacheService } from '@core/cache'
-import { InjectGzipCompression } from '@core/file-compressor/compressor.decorator'
-import { FileCompressor } from '@core/file-compressor/compressor.service'
+import { FileCompressor, InjectGzipCompression } from '@core/file-compressor'
 import { MailService } from '@core/mail'
 import { FileService, IFile, SUPABASE_STORAGE } from "@libs/file-storage"
+import { PrismaService } from '@libs/prisma'
 import { TokenService } from '@modules/token/token.service'
+
 import {
   ConfirmationCodePayload,
   InvitationTokenPayload
@@ -168,8 +167,15 @@ export class AuthService {
     })
   }
 
+  async compressFile(file: IFile) {
+    return this.gzipCompressorService.compress(file)
+  }
+
+  async decompressFile(file: IFile) {
+    return this.gzipCompressorService.decompress(file)
+  }
+
   async uploadFile(file: IFile) {
-    Object.assign(file, await this.gzipCompressorService.compress(file))
     return this.fileService.upload(file)
   }
 }

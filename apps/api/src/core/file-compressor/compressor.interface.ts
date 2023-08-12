@@ -17,3 +17,13 @@ export interface IFile {
     path: string;
     buffer: Buffer;
 }
+
+export interface IFileCompressorOptions {
+    image?: {
+        largeFile?: {
+            minSize: number
+            quality: number
+        }
+        defaultCompressedQuality?: number
+    }
+}

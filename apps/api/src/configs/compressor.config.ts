@@ -1,0 +1,1 @@
+export const compressorConfig = { image: { defaultCompressedQuality: 80, largeFile: { minSize: 1024 * 6, quality: 10 } } }

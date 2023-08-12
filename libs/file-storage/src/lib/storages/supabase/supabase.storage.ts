@@ -32,7 +32,6 @@ export class SupabaseStorage {
     }
 
     async getUrl(key: string) {
-        console.log(key)
         return this.storage.from(this.bucket).getPublicUrl(key).data.publicUrl
     }
 

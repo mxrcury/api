@@ -1,3 +1,7 @@
+import { Module } from '@nestjs/common'
+
+import { TokenModule, TokenService } from '@modules/token'
+
 import { env } from '@configs/env.config'
 import { supabaseConfig } from '@configs/storages.config'
 import {
@@ -5,8 +9,7 @@ import {
   SUPABASE_STORAGE,
   SupabaseStorage
 } from "@libs/file-storage"
-import { TokenModule, TokenService } from '@modules/token'
-import { Module } from '@nestjs/common'
+
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 

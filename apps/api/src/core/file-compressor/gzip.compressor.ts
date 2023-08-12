@@ -1,5 +1,4 @@
-
-import { gzip } from 'zlib';
+import { gunzip, gzip } from 'zlib';
 
 import { IFile } from '@libs/file-storage';
 
@@ -15,7 +14,13 @@ export class GzipCompressor implements Compressor {
             })
         })
     }
-    decompress<T>(value: T): Promise<T> {
-        throw new Error('Method not implemented.');
+    decompress<T extends IFile>(value: T): Promise<T> {
+        return new Promise((resolve, reject) => {
+            gunzip(value.buffer, (error, data) => {
+                if (error) reject(error)
+                Object.assign(value, { buffer: data, size: data.length })
+                resolve(value)
+            })
+        })
     }
 }

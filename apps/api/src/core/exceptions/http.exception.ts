@@ -1,3 +1,4 @@
+import { env } from '@configs/env.config'
 import {
   ArgumentsHost,
   Catch,
@@ -5,16 +6,26 @@ import {
   HttpException
 } from '@nestjs/common'
 
-@Catch(HttpException)
+@Catch(HttpException, Error)
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost): void {
+  catch(exception: HttpException | Error, host: ArgumentsHost): void {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse()
-    const status = exception.getStatus()
-    const message = exception.getResponse()
 
-    response
-      .status(status)
-      .json(typeof message === 'string' ? { status, message } : message)
+    if (exception instanceof HttpException) {
+      const status = exception.getStatus()
+      const message = exception.getResponse()
+
+      response
+        .status(status)
+        .json(typeof message === 'string' ? { status, message } : message)
+    } else {
+      if (env.NODE_ENV === 'development') {
+        response.status(500).json({
+          status: 500,
+          message: exception.message
+        })
+      }
+    }
   }
 }

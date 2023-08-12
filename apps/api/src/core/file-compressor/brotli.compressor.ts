@@ -1,6 +1,6 @@
 
 import { IFile } from '@libs/file-storage';
-import { brotliCompress } from 'zlib';
+import { brotliCompress, brotliDecompress } from 'zlib';
 import { Compressor } from "./compressor.interface";
 
 export class BrotliCompressor implements Compressor {
@@ -13,9 +13,13 @@ export class BrotliCompressor implements Compressor {
             })
         })
     }
-    decompress<T>(value: T): Promise<T> {
-        throw new Error('Method not implemented.');
+    decompress<T extends IFile>(value: T): Promise<T> {
+        return new Promise((resolve, reject) => {
+            brotliDecompress(value.buffer, (error, data) => {
+                if (error) reject(error)
+                Object.assign(value, { buffer: data, size: data.length })
+                resolve(value)
+            })
+        })
     }
-
-
 }

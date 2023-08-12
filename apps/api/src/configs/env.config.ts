@@ -9,6 +9,7 @@ const envSchema = z.object({
   // Server
   PORT: z.string(),
   CLIENT_URL: z.string(),
+  NODE_ENV: z.string(),
 
   // Jwt
   ACCESS_SECRET_KEY: z.string(),
