@@ -55,7 +55,7 @@ $ pnpm run start
 - [x] Add cron
 - [x] Add mail service
 - [x] Implement auth with codes and some other features conncted with sending mails, cron
-- [ ] Implement working with files and connect to some cloud storage for this action
+- [x] Implement working with files and connect to some cloud storage for this action
 - [ ] Implement photos compression to decrease memory what they took
 - [ ] Add using interceptors, pipes, custom decorators, middlewares
 - [ ] Add passport auth, like via some social networks (google, instagram and etc)
