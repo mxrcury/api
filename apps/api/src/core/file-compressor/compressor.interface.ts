@@ -18,9 +18,9 @@ export interface IFile {
     buffer: Buffer;
 }
 
-export type IDownloadedFile = Pick<IFile, 'buffer' | 'size' | 'mimetype' | 'originalname'>
+export type TDownloadedFile = Pick<IFile, 'buffer' | 'size' | 'mimetype' | 'originalname'>
 
-export type TCompressFile = IFile | IDownloadedFile
+export type TCompressFile = IFile | TDownloadedFile
 
 export interface IFileCompressorOptions {
     image?: {

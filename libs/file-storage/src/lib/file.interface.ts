@@ -9,15 +9,12 @@ export interface IFile {
   destination: string;
   filename: string;
   path: string;
-  buffer: Buffer;
+  buffer: Buffer
 }
 
-export interface IDownloadedFile {
-  buffer: Buffer,
-  size: number,
-  mimetype: string,
-  originalname: string
-}
+export type TDownloadedFile = Pick<IFile, 'buffer' | 'size' | 'mimetype' | 'originalname'>
+
+export type File = IFile | TDownloadedFile
 export interface IResponse {
   url?: string
   key?: string
@@ -52,7 +49,6 @@ export interface IStorageOptions {
     url: boolean
     key?: boolean
   }
-  // TODO: add toggling url in response or if it will be only upload, cause in some storages it can take additional request and time
 }
 
 export interface IFileServiceOptions extends IStorageOptions {
@@ -61,9 +57,9 @@ export interface IFileServiceOptions extends IStorageOptions {
 }
 
 export abstract class FileStorage {
-  abstract upload(file: IFile): Promise<IResponse>
+  abstract upload(file: File): Promise<IResponse>
   abstract delete(key: string): Promise<IResponse>
-  abstract download(key: string): Promise<IFile | IDownloadedFile>
+  abstract download(key: string): Promise<File>
   abstract getUrl?(key: string): Promise<string> // TODO: also implement it for url toggling
 
   abstract get bucket(): string

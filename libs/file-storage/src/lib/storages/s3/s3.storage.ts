@@ -1,16 +1,27 @@
 import * as AWS from 'aws-sdk'
 
+import { FileStorage, TDownloadedFile } from '../../file.interface'
 import {
   IFile,
   TS3StorageOptions
 } from '../s3/s3.types'
 import { SETTER_BUCKET_WRONG_VALUE } from './s3.constants'
 
-export class S3Storage {
+export class S3Storage implements FileStorage {
   private storage: AWS.S3
 
   constructor(options: TS3StorageOptions) {
     this.storage = new AWS.S3(options)
+  }
+  async download(key: string): Promise<TDownloadedFile> {
+    const file = await this.storage.getObject({ Bucket: this.bucket, Key: key }).promise()
+
+    return {
+      buffer: file.Body as Buffer,
+      size: file.ContentLength,
+      mimetype: file.ContentType,
+      originalname: key,
+    }
   }
 
   async upload(file: IFile) {

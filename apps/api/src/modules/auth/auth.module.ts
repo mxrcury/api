@@ -3,11 +3,13 @@ import { Module } from '@nestjs/common'
 import { TokenModule, TokenService } from '@modules/token'
 
 import { env } from '@configs/env.config'
-import { supabaseConfig } from '@configs/storages.config'
+import { s3Config } from '@configs/storages.config'
 import {
   FileService,
-  SUPABASE_STORAGE,
-  SupabaseStorage
+  LOCAL_STORAGE,
+  LocalStorage,
+  S3Storage,
+  S3_STORAGE
 } from "@libs/file-storage"
 
 import { AuthController } from './auth.controller'
@@ -20,15 +22,25 @@ import { AuthService } from './auth.service'
     AuthService,
     TokenService,
     {
-      provide: SUPABASE_STORAGE,
+      provide: S3_STORAGE,
       useFactory: () => new FileService({
-        storage: new SupabaseStorage(supabaseConfig),
-        bucket: env.SUPABASE_BUCKET_NAME,
+        storage: new S3Storage(s3Config),
+        bucket: env.AWS_BUCKET_NAME,
         include: { url: true, key: true },
         limits: {
           extensions: '*'
         },
         naming: { random: true }
+      })
+    },
+    {
+      provide: LOCAL_STORAGE,
+      useFactory: () => new FileService({
+        storage: new LocalStorage({ localFolder: 'public' }),
+        bucket: 'images',
+        include: { url: true, key: true },
+        naming: { random: true },
+        limits: { extensions: '*' }
       })
     }
   ]

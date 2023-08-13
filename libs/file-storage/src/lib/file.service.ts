@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto'
 import { extname } from 'path'
-import { FileStorage, IFile, IFileServiceOptions, IResponse, IStorageOptions } from './file.interface'
+import { File, FileStorage, IFileServiceOptions, IResponse, IStorageOptions } from './file.interface'
 
 export class FileService {
   private $storage: FileStorage
@@ -14,10 +14,10 @@ export class FileService {
     return this.$storage.download(key)
   }
 
-  async upload(file: IFile): Promise<IResponse> {
+  async upload(file: File): Promise<IResponse> {
     try {
-      if (this.options.limits?.extensions !== '*') this.validateExtension(file.originalname)
-      if (this.options.limits?.size) this.validateSize(file.size)
+      if (this.options?.limits?.extensions !== '*') this.validateExtension(file.originalname)
+      if (this.options?.limits?.size) this.validateSize(file.size)
 
       const { key, url } = await this.$storage.upload({
         ...file,

@@ -4,7 +4,7 @@ import { compare, genSalt, hash } from 'bcrypt'
 import { CacheService } from '@core/cache'
 import { FileCompressor, InjectGzipCompression } from '@core/file-compressor'
 import { MailService } from '@core/mail'
-import { FileService, IFile, SUPABASE_STORAGE } from "@libs/file-storage"
+import { FileService, IFile, LOCAL_STORAGE, S3_STORAGE } from "@libs/file-storage"
 import { PrismaService } from '@libs/prisma'
 import { TokenService } from '@modules/token/token.service'
 
@@ -25,7 +25,8 @@ export class AuthService {
     private readonly mailService: MailService,
     private readonly cacheStorage: CacheService,
 
-    @Inject(SUPABASE_STORAGE) private readonly fileService: FileService,
+    @Inject(S3_STORAGE) private readonly fileService: FileService,
+    @Inject(LOCAL_STORAGE) private readonly localFileService: FileService,
     @InjectGzipCompression() private readonly gzipCompressorService: FileCompressor
   ) { }
 
@@ -172,17 +173,16 @@ export class AuthService {
   }
 
   async decompressFile(key: string) {
-    const file = await this.fileService.download(key)
+    const file = await this.localFileService.download(key)
+
     Object.assign(file, await this.gzipCompressorService.decompress(file))
 
-    return { after: file.size }
+    return { after: file.size, ...file }
   }
 
   async uploadFile(file: IFile) {
-    console.log(file)
     const compressedFile = await this.gzipCompressorService.compress(file)
-
-    return compressedFile
+    return this.localFileService.upload(compressedFile)
     // return this.fileService.
   }
 }

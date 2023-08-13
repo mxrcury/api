@@ -1,10 +1,11 @@
 import fs from 'fs/promises'
-import path from 'path'
+import path, { extname } from 'path'
 
-import { SETTER_BUCKET_WRONG_VALUE } from './local.constants'
+import { FileStorage } from '../../file.interface'
+import { SETTER_BUCKET_WRONG_VALUE, allMimeTypes } from './local.constants'
 import { IFile, ILocalStorageOptions } from './local.types'
 
-export class LocalStorage {
+export class LocalStorage implements FileStorage {
   constructor(options: ILocalStorageOptions) {
     this.localStorageOptions = options
     this.initializeLocalFolder()
@@ -49,6 +50,18 @@ export class LocalStorage {
     )
 
     return url
+  }
+
+  async download(key: string) {
+    const buffer = await fs.readFile(path.resolve(this.localStorageOptions.localFolder, this.bucket, key))
+    const fileInfo = await fs.lstat(path.resolve(this.localStorageOptions.localFolder, this.bucket, key))
+
+    return {
+      buffer,
+      size: fileInfo.size,
+      mimetype: allMimeTypes[extname(key)],
+      originalname: key,
+    }
   }
 
   private async checkDirExistence(path: string) {
