@@ -10,6 +10,9 @@ export class FileService {
     this.$storage = storage
     this.$storage.bucket = bucket
   }
+  async download(key: string) {
+    return this.$storage.download(key)
+  }
 
   async upload(file: IFile): Promise<IResponse> {
     try {

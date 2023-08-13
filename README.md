@@ -54,10 +54,14 @@ $ pnpm run start
 - [ ] Implement database backup
 - [x] Add cron
 - [x] Add mail service
-- [x] Implement auth with codes and some other features conncted with sending mails, cron
+- [x] Implement auth with codes and some other features connected with sending mails, cron
 - [x] Implement working with files and connect to some cloud storage for this action
 - [x] Implement photos compression to decrease memory what they took
 - [ ] Add using interceptors, pipes, custom decorators, middlewares
+- [ ] Create separate packages for file storages and compressing files
+
+     <!-- first package will be just service of file storages, the second is some modules for nestjs and others are for every storage -->
+     <!-- compression for nestjs with modules, services, decorators and etc -->
 - [ ] Add passport auth, like via some social networks (google, instagram and etc)
 - [ ] Add using web sockets for in real time logic, notifications
 - [ ] Add CI/CD

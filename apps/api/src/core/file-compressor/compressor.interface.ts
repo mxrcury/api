@@ -1,8 +1,8 @@
 import { Readable } from "stream";
 
 export abstract class Compressor {
-    abstract compress<T extends IFile>(value: T): Promise<T>
-    abstract decompress<T extends IFile>(value: T): Promise<T>
+    abstract compress<T extends TCompressFile>(value: T): Promise<T>
+    abstract decompress<T extends TCompressFile>(value: T): Promise<T>
 }
 
 export interface IFile {
@@ -17,6 +17,10 @@ export interface IFile {
     path: string;
     buffer: Buffer;
 }
+
+export type IDownloadedFile = Pick<IFile, 'buffer' | 'size' | 'mimetype' | 'originalname'>
+
+export type TCompressFile = IFile | IDownloadedFile
 
 export interface IFileCompressorOptions {
     image?: {

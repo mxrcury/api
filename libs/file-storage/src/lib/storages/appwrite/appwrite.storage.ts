@@ -1,10 +1,9 @@
 import { Client, InputFile, Storage } from 'node-appwrite';
 
 import { SETTER_BUCKET_WRONG_VALUE } from '../../file.constants';
-import { FileStorage } from "../../file.interface";
 import { IAppWriteStorageOptions, IFile, TAppWriteOptions } from './appwrite.types';
 
-export class AppWriteStorage implements FileStorage {
+export class AppWriteStorage {
     private storage: Storage
     private client: Client
     constructor(options: IAppWriteStorageOptions) {

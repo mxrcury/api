@@ -11,6 +11,13 @@ export interface IFile {
   path: string;
   buffer: Buffer;
 }
+
+export interface IDownloadedFile {
+  buffer: Buffer,
+  size: number,
+  mimetype: string,
+  originalname: string
+}
 export interface IResponse {
   url?: string
   key?: string
@@ -56,6 +63,7 @@ export interface IFileServiceOptions extends IStorageOptions {
 export abstract class FileStorage {
   abstract upload(file: IFile): Promise<IResponse>
   abstract delete(key: string): Promise<IResponse>
+  abstract download(key: string): Promise<IFile | IDownloadedFile>
   abstract getUrl?(key: string): Promise<string> // TODO: also implement it for url toggling
 
   abstract get bucket(): string

@@ -2,11 +2,10 @@ import sharp from 'sharp';
 
 import { extname } from "path";
 
-import { IFile } from "@libs/file-storage";
-
+import { TCompressFile } from './compressor.interface';
 
 export class ImageCompressor {
-    async compress(file: IFile, quality: number) {
+    async compress(file: TCompressFile, quality: number) {
         const extension = extname(file.originalname)
         switch (extension) {
             case '.jpeg':

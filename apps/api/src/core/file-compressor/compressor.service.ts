@@ -1,15 +1,14 @@
 
-import { IFile } from '@libs/file-storage';
 
 import { imageMimetypes } from './compressor.constants';
-import { Compressor, IFileCompressorOptions } from "./compressor.interface";
+import { Compressor, IFileCompressorOptions, TCompressFile } from "./compressor.interface";
 import { ImageCompressor } from './image.compressor';
 
 export class FileCompressor {
     constructor(public compressor: Compressor, options?: IFileCompressorOptions, private readonly imageCompressor = new ImageCompressor()) {
         this.options = options
     }
-    async compress(file: IFile) {
+    async compress(file: TCompressFile) {
         if (imageMimetypes[file.mimetype]) {
             const imageOptions = this.options?.image || {}
             const minSizeLargeOfFileToDecQuality = imageOptions?.largeFile.minSize || 1024 * 5
@@ -18,14 +17,13 @@ export class FileCompressor {
 
             const quality = file.size > minSizeLargeOfFileToDecQuality * 1000 ? decreasedQualityLargeFile : defaultCompressedQuality
             const buffer = await this.imageCompressor.compress(file, quality)
-            Object.assign(file, { buffer, size: buffer.length })
 
-            return file
+            return { ...file, buffer, size: buffer.length }
         } else {
-            return await this.compressor.compress(file)
+            return this.compressor.compress(file)
         }
     }
-    decompress(value: IFile) {
+    async decompress(value: TCompressFile) {
         if (imageMimetypes[value.mimetype]) throw new Error('Image decompression is not supported')
         return this.compressor.decompress(value)
     }

@@ -3,14 +3,13 @@ import { credential, storage as firebaseStorage } from 'firebase-admin';
 import { initializeApp } from 'firebase-admin/app';
 
 import {
-  FileStorage,
   IStorageOptions
 } from '../../file.interface';
 import { IFile } from '../s3/s3.types';
 import { SETTER_BUCKET_WRONG_VALUE } from './firebase.constants';
 import { IFirebaseStorageOptions } from './firebase.types';
 
-export class FirebaseStorage implements FileStorage {
+export class FirebaseStorage {
   private storage: Bucket
 
   constructor(options: IFirebaseStorageOptions) {

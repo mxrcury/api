@@ -171,11 +171,18 @@ export class AuthService {
     return this.gzipCompressorService.compress(file)
   }
 
-  async decompressFile(file: IFile) {
-    return this.gzipCompressorService.decompress(file)
+  async decompressFile(key: string) {
+    const file = await this.fileService.download(key)
+    Object.assign(file, await this.gzipCompressorService.decompress(file))
+
+    return { after: file.size }
   }
 
   async uploadFile(file: IFile) {
-    return this.fileService.upload(file)
+    console.log(file)
+    const compressedFile = await this.gzipCompressorService.compress(file)
+
+    return compressedFile
+    // return this.fileService.
   }
 }
