@@ -1,10 +1,11 @@
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 
 import { SETTER_BUCKET_WRONG_VALUE } from '../../file.constants';
+import { FileStorage } from '../../file.interface';
 import { IAzureStorageOptions, IFile } from "./azure.types";
 
 
-export class AzureStorage {
+export class AzureStorage implements FileStorage {
     private storage: ContainerClient
 
     public serviceClient: BlobServiceClient
@@ -47,6 +48,23 @@ export class AzureStorage {
             success: true
         }
     }
+
+    async download(key: string) {
+        if (!this.storage) {
+            this.storage = this.serviceClient.getContainerClient(this.bucket)
+            if (!this.storage.exists()) throw new Error(`Container "${this.bucket} does not exist"`)
+        }
+        const buffer = await this.storage.getBlobClient(key).downloadToBuffer()
+        const file = await this.storage.getBlobClient(key).download()
+
+        return {
+            buffer,
+            originalname: key,
+            mimetype: file.contentType,
+            size: file.contentLength
+        }
+    }
+
     get bucket(): string {
         return this.$bucket
     }

@@ -3,9 +3,15 @@ import { Module } from '@nestjs/common'
 import { TokenModule, TokenService } from '@modules/token'
 
 import { env } from '@configs/env.config'
-import { s3Config } from '@configs/storages.config'
+import { appWriteConfig, azureConfig, firebaseConfig, localStorageConfig, s3Config } from '@configs/storages.config'
 import {
+  APPWRITE_STORAGE,
+  AZURE_STORAGE,
+  AppWriteStorage,
+  AzureStorage,
+  FIREBASE_STORAGE,
   FileService,
+  FirebaseStorage,
   LOCAL_STORAGE,
   LocalStorage,
   S3Storage,
@@ -36,11 +42,35 @@ import { AuthService } from './auth.service'
     {
       provide: LOCAL_STORAGE,
       useFactory: () => new FileService({
-        storage: new LocalStorage({ localFolder: 'public' }),
+        storage: new LocalStorage(localStorageConfig),
         bucket: 'images',
         include: { url: true, key: true },
         naming: { random: true },
         limits: { extensions: '*' }
+      })
+    },
+    {
+      provide: FIREBASE_STORAGE,
+      useFactory: () => new FileService({
+        storage: new FirebaseStorage(firebaseConfig),
+        bucket: env.FIREBASE_BUCKET_NAME,
+        include: { url: true, key: true }
+      })
+    },
+    {
+      provide: AZURE_STORAGE,
+      useFactory: () => new FileService({
+        storage: new AzureStorage(azureConfig),
+        bucket: env.AZURE_BUCKET_NAME,
+        include: { url: true, key: true }
+      })
+    },
+    {
+      provide: APPWRITE_STORAGE,
+      useFactory: () => new FileService({
+        storage: new AppWriteStorage(appWriteConfig),
+        bucket: env.APPWRITE_BUCKET_NAME,
+        include: { url: true, key: true }
       })
     }
   ]

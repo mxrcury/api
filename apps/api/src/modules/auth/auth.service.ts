@@ -1,10 +1,10 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { compare, genSalt, hash } from 'bcrypt'
 
 import { CacheService } from '@core/cache'
 import { FileCompressor, InjectGzipCompression } from '@core/file-compressor'
 import { MailService } from '@core/mail'
-import { FileService, IFile, LOCAL_STORAGE, S3_STORAGE } from "@libs/file-storage"
+import { APPWRITE_STORAGE, AZURE_STORAGE, FIREBASE_STORAGE, FileService, IFile, LOCAL_STORAGE, S3_STORAGE } from "@libs/file-storage"
 import { PrismaService } from '@libs/prisma'
 import { TokenService } from '@modules/token/token.service'
 
@@ -27,6 +27,10 @@ export class AuthService {
 
     @Inject(S3_STORAGE) private readonly fileService: FileService,
     @Inject(LOCAL_STORAGE) private readonly localFileService: FileService,
+    @Inject(FIREBASE_STORAGE) private readonly firebaseFileService: FileService,
+    @Inject(AZURE_STORAGE) private readonly azureFileService: FileService,
+    @Inject(APPWRITE_STORAGE) private readonly appwriteFileService: FileService,
+
     @InjectGzipCompression() private readonly gzipCompressorService: FileCompressor
   ) { }
 
@@ -173,7 +177,8 @@ export class AuthService {
   }
 
   async decompressFile(key: string) {
-    const file = await this.localFileService.download(key)
+    const file = await this.appwriteFileService.download(key)
+    if (!file) throw new NotFoundException('File not found')
 
     Object.assign(file, await this.gzipCompressorService.decompress(file))
 
@@ -182,7 +187,6 @@ export class AuthService {
 
   async uploadFile(file: IFile) {
     const compressedFile = await this.gzipCompressorService.compress(file)
-    return this.localFileService.upload(compressedFile)
-    // return this.fileService.
+    return await this.appwriteFileService.upload(compressedFile)
   }
 }

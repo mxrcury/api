@@ -11,7 +11,12 @@ export class FileService {
     this.$storage.bucket = bucket
   }
   async download(key: string) {
-    return this.$storage.download(key)
+    try {
+      return await this.$storage.download(key)
+    } catch (error) {
+      console.error(error)
+      return null
+    }
   }
 
   async upload(file: File): Promise<IResponse> {
@@ -57,7 +62,7 @@ export class FileService {
   }
 
   private validateExtension(fileName: string) {
-    if (this.options.limits?.extensions === '*') return
+    if (!this.options.limits?.extensions || this.options.limits?.extensions === '*') return
     const { exclude, include } = this.options.limits.extensions
     const ext = extname(fileName)
 

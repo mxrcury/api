@@ -3,13 +3,14 @@ import { credential, storage as firebaseStorage } from 'firebase-admin';
 import { initializeApp } from 'firebase-admin/app';
 
 import {
+  FileStorage,
   IStorageOptions
 } from '../../file.interface';
 import { IFile } from '../s3/s3.types';
 import { SETTER_BUCKET_WRONG_VALUE } from './firebase.constants';
 import { IFirebaseStorageOptions } from './firebase.types';
 
-export class FirebaseStorage {
+export class FirebaseStorage implements FileStorage {
   private storage: Bucket
 
   constructor(options: IFirebaseStorageOptions) {
@@ -38,12 +39,26 @@ export class FirebaseStorage {
   }
 
   async getUrl(key: string) {
+    if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
     const url = await this.storage.file(key).getSignedUrl({
       expires: this.$firebaseOptions.expiration || '03-09-2491',
       action: this.$firebaseOptions.action || 'read'
     })
 
     return url[0]
+  }
+
+  async download(key: string) {
+    if (!this.storage) this.storage = firebaseStorage().bucket(this.bucket)
+    const buffer = (await this.storage.file(key).download())[0]
+    const file = (await this.storage.file(key).getMetadata())[0]
+
+    return {
+      buffer,
+      size: file.size,
+      mimetype: file.contentType,
+      originalname: file.name
+    }
   }
 
   set options(value: IStorageOptions) {
