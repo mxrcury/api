@@ -38,7 +38,8 @@ $ pnpm install
 # development
 $ pnpm run start
 ```
-
+## Temporaly freezed...
+<!--
 #### Todo:
 
 - [x] Add to git for committing
@@ -59,9 +60,8 @@ $ pnpm run start
 - [x] Implement photos compression to decrease memory what they took
 - [ ] Add using interceptors, pipes, custom decorators, middlewares
 - [ ] Create separate packages for file storages and compressing files
-
-     <!-- first package will be just service of file storages, the second is some modules for nestjs and others are for every storage -->
-     <!-- compression for nestjs with modules, services, decorators and etc -->
+-->
+<!--
 - [ ] Add passport auth, like via some social networks (google, instagram and etc)
 - [ ] Add using web sockets for in real time logic, notifications
 - [ ] Add CI/CD
@@ -73,3 +73,4 @@ $ pnpm run start
 - Implement limiter of requests to API and banning
 - Create an client application for this API using Svelte
 - Showing preview of document files
+-->
